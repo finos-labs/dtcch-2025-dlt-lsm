@@ -13,7 +13,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   ...props
 }) => {
   return (
-    <CIconButton bg="#5b33fe" aria-label={ariaLabel} {...props}>
+    <CIconButton color="white" bg="#5b33fe" aria-label={ariaLabel} {...props}>
       {props.children}
     </CIconButton>
   );
