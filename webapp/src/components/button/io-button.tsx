@@ -10,7 +10,7 @@ interface ButtonProps extends CButtonProps {
 
 const Button: React.FC<ButtonProps> = ({ children, ...props }) => {
   return (
-    <CButton bg="#5b33fe" {...props}>
+    <CButton color="white" bg="#5b33fe" {...props}>
       {children}
     </CButton>
   );
