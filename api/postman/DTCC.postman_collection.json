@@ -86,6 +86,22 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get pending settlements",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Start batch",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
 		}
 	]
 }
