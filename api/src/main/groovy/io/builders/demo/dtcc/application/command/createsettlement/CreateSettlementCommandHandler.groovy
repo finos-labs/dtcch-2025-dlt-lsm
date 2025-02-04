@@ -7,9 +7,11 @@ import io.builders.demo.core.command.CommandHandler
 import io.builders.demo.core.event.EventBus
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 import java.time.OffsetDateTime
 
+@Component
 class CreateSettlementCommandHandler implements CommandHandler<SettlementCreatedEvent, CreateSettlementCommand> {
 
     @Autowired

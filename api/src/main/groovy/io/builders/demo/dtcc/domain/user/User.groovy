@@ -6,7 +6,7 @@ import jakarta.persistence.*
 import groovy.transform.EqualsAndHashCode
 
 @Entity
-@Table(name = 'user')
+@Table(name = '"user"')
 @EqualsAndHashCode
 class User extends BaseEntity {
 
