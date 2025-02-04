@@ -56,7 +56,6 @@ class GeminiIAAdapter implements IAPort{
     @PostConstruct
     init() {
         def apiUrl = "${this.url}/${this.model}:generateContent?key=${this.apiKey}"
-
         connection = (HttpURLConnection) new URL(apiUrl).openConnection()
         connection.setRequestMethod('POST')
         connection.setDoOutput(true)
