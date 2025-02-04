@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ruleset xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://codenarc.org/ruleset/1.0'
+         xsi:schemaLocation='http://codenarc.org/ruleset/1.0 http://codenarc.org/ruleset-schema.xsd'
+         xsi:noNamespaceSchemaLocation='http://codenarc.org/ruleset-schema.xsd'>
+
+    <!-- Basic Rules -->
+    <ruleset-ref path='rulesets/basic.xml'>
+        <exclude name='EmptyClass'/>
+        <exclude name='EmptyMethod'/>
+    </ruleset-ref>
+
+    <!-- Braces -->
+    <ruleset-ref path='rulesets/braces.xml'/>
+
+    <!-- Concurrency -->
+    <ruleset-ref path='rulesets/concurrency.xml'/>
+
+    <!-- Convention -->
+    <ruleset-ref path='rulesets/convention.xml'>
+        <exclude name='TrailingComma'/>
+        <exclude name='NoJavaUtilDate'/>
+        <exclude name='CompileStatic'/>
+        <exclude name='ImplicitClosureParameter'/>
+        <exclude name='ImplicitReturnStatement'/>
+    </ruleset-ref>
+
+    <!-- Design -->
+    <ruleset-ref path='rulesets/design.xml'>
+        <exclude name='AbstractClassWithoutAbstractMethod'/>
+        <exclude name="OptionalMethodParameter"/>
+        <exclude name="OptionalField"/>
+    </ruleset-ref>
+
+    <!-- DRY -->
+    <ruleset-ref path='rulesets/dry.xml'/>
+
+    <!-- Exceptions -->
+    <ruleset-ref path='rulesets/exceptions.xml'/>
+
+    <!-- Formatting -->
+    <ruleset-ref path='rulesets/formatting.xml'>
+        <rule-config name='LineLength'>
+            <property name='length' value='120'/>
+        </rule-config>
+        <rule-config name='SpaceAroundMapEntryColon'>
+            <property name='characterAfterColonRegex' value='\s'/>
+        </rule-config>
+        <exclude name="ClassJavadoc"/>
+    </ruleset-ref>
+
+    <!-- Groovyism -->
+    <ruleset-ref path='rulesets/groovyism.xml'>
+        <exclude name="ClosureAsLastMethodParameter"/>
+    </ruleset-ref>
+
+    <!-- Imports -->
+    <ruleset-ref path='rulesets/imports.xml'>
+        <rule-config name='MisorderedStaticImports'>
+            <property name='comesBefore' value='false'/>
+        </rule-config>
+    </ruleset-ref>
+
+    <!-- Logging -->
+    <ruleset-ref path='rulesets/logging.xml'/>
+
+    <!-- Naming -->
+    <ruleset-ref path='rulesets/naming.xml'/>
+
+    <!-- Size and Complexity -->
+    <ruleset-ref path='rulesets/size.xml'>
+        <rule-config name='ClassSize'>
+            <property name='maxLines' value='500'/>
+        </rule-config>
+        <rule-config name='MethodSize'>
+            <property name='maxLines' value='100'/>
+        </rule-config>
+        <rule-config name='ParameterCount'>
+            <property name='maxParameters' value='8'/>
+        </rule-config>
+    </ruleset-ref>
+
+    <!-- Security -->
+    <ruleset-ref path='rulesets/security.xml'/>
+
+    <!-- Serialization -->
+    <ruleset-ref path='rulesets/serialization.xml'/>
+
+    <!-- Unnecessary -->
+    <ruleset-ref path='rulesets/unnecessary.xml'>
+        <exclude name="UnnecessaryReturnKeyword"/>
+    </ruleset-ref>
+
+    <!-- Unused -->
+    <ruleset-ref path='rulesets/unused.xml'/>
+
+</ruleset>

@@ -1,0 +1,103 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1727782825504-3
+      author: Roman (generated)
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: contract_event_details_id
+                  type: uuid
+            tableName: contract_event_details_indexed_parameters
+  - changeSet:
+      id: 1727782825504-4
+      author: Roman (generated)
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: contract_event_details_id
+                  type: uuid
+            tableName: contract_event_details_non_indexed_parameters
+  - changeSet:
+      id: 1727782825504-5
+      author: Roman (generated)
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: id
+                  type: uuid
+            tableName: contract_event_details
+  - changeSet:
+      id: 1727782825504-6
+      author: Roman (generated)
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: id
+            indexName: IX_contract_event_detailsPK
+            tableName: contract_event_details
+            unique: true
+  - changeSet:
+      id: 1727782825504-7
+      author: Roman (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: contract_event_details_id
+            baseTableName: contract_event_details_non_indexed_parameters
+            constraintName: FK38id16u49vmhki1ga6497w98m
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: contract_event_details
+            validate: true
+  - changeSet:
+      id: 1727782825504-8
+      author: Roman (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: contract_event_details_id
+            baseTableName: contract_event_details_indexed_parameters
+            constraintName: FKk85xvlliglwkcnaa65rgdgwbu
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: contract_event_details
+            validate: true
+  - changeSet:
+      id: 1727782825504-9
+      author: Roman (generated)
+      changes:
+        - dropColumn:
+            columnName: contract_event_details_filter_id
+            tableName: contract_event_details_indexed_parameters
+  - changeSet:
+      id: 1727782825504-10
+      author: Roman (generated)
+      changes:
+        - dropColumn:
+            columnName: contract_event_details_filter_id
+            tableName: contract_event_details_non_indexed_parameters
+  - changeSet:
+      id: 1727782825504-1
+      author: Roman (generated)
+      changes:
+        - dropPrimaryKey:
+            tableName: contract_event_details
+  - changeSet:
+      id: 1727782825504-2
+      author: Roman (generated)
+      changes:
+        - addPrimaryKey:
+            columnNames: id
+            constraintName: contract_event_detailsPK
+            tableName: contract_event_details
+

@@ -1,0 +1,85 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-tables
+      author: carlos
+      changes:
+        - createTable:
+            tableName: lsm_batch
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: execution_date
+                  type: timestamp with time zone
+
+        - createTable:
+            tableName: settlement
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: buyer_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: seller_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cash_amount
+                  type: decimal(19,4)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: security_amount
+                  type: decimal(19,4)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: execution_date
+                  type: timestamp with time zone
+              - column:
+                  name: lsm_batch_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_settlement_lsmbatch
+                    references: lsm_batch(id)
+
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: dlt_address
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: alias
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

@@ -1,0 +1,110 @@
+spring:
+  application:
+    name: iob-spring-boilerplate
+  datasource:
+    eventeum:
+      url: jdbc:postgresql://${EVENTEUM_DATABASE_HOST:localhost}:${EVENTEUM_DATABASE_PORT:5432}/${EVENTEUM_DATABASE_DB:eventeum}
+      username: ${EVENTEUM_DATABASE_USERNAME:iob}
+      password: ${EVENTEUM_DATABASE_PWD:superSecure1!}
+      hikari:
+        maximum-pool-size: ${EVENTEUM_DATABASE_MAX_POOL_SIZE:10}
+        minimum-idle: ${EVENTEUM_DATABASE_MIN_IDLE:5}
+        connection-timeout: ${EVENTEUM_DATABASE_TIMEOUT:30000}
+    blockchain:
+      url: jdbc:postgresql://${BLOCKCHAIN_DATABASE_HOST:localhost}:${BLOCKCHAIN_DATABASE_PORT:5432}/${BLOCKCHAIN_DATABASE_DB:blockchain}
+      username: ${BLOCKCHAIN_DATABASE_USERNAME:iob}
+      password: ${BLOCKCHAIN_DATABASE_PWD:superSecure1!}
+      hikari:
+        maximum-pool-size: ${BLOCKCHAIN_DATABASE_MAX_POOL_SIZE:10}
+        minimum-idle: ${BLOCKCHAIN_DATABASE_MIN_IDLE:5}
+        connection-timeout: ${BLOCKCHAIN_DATABASE_TIMEOUT:30000}
+    surikata:
+      url: jdbc:postgresql://${SURIKATA_DATABASE_HOST:localhost}:${SURIKATA_DATABASE_PORT:5432}/${SURIKATA_DATABASE_DB:surikata}
+      username: ${SURIKATA_DATABASE_USERNAME:iob}
+      password: ${SURIKATA_DATABASE_PWD:superSecure1!}
+      hikari:
+        maximum-pool-size: ${SURIKATA_DATABASE_MAX_POOL_SIZE:10}
+        minimum-idle: ${SURIKATA_DATABASE_MIN_IDLE:5}
+        connection-timeout: ${SURIKATA_DATABASE_TIMEOUT:30000}
+    dtcc:
+      url: jdbc:postgresql://${DTCC_DATABASE_HOST:localhost}:${DTCC_DATABASE_PORT:5432}/${DTCC_DATABASE_DB:dtcc}
+      username: ${DTCC_DATABASE_USERNAME:iob}
+      password: ${DTCC_DATABASE_PWD:superSecure1!}
+      hikari:
+        maximum-pool-size: ${DTCC_DATABASE_MAX_POOL_SIZE:10}
+        minimum-idle: ${DTCC_DATABASE_MIN_IDLE:5}
+        connection-timeout: ${DTCC_DATABASE_TIMEOUT:30000}
+
+# Eventeum
+eventStore:
+  type: DB
+  url: ${EVENTEUM_PROTOCOL:http}://${EVENTEUM_HOST:localhost}:${EVENTEUM_PORT:8080}/api/rest/v1/eventeum
+  eventPath: /event
+  latestBlockPath: /latest-block
+database:
+  type: SQL
+
+ethereum:
+  nodes:
+    - name: default
+      url: ${EVENTEUM_ETH_NODE_PROTOCOL:http}://${EVENTEUM_ETH_NODE_HOST:localhost}:${EVENTEUM_ETH_NODE_PORT:8545}
+      blockStrategy: ${EVENTEUM_ETH_BLOCK_STRATEGY:POLL}
+      syncingThreshold: ${EVENTEUM_ETH_SYNCING_THRESHOLD:100}
+      healthcheckInterval: ${EVENTEUM_ETH_HEALTH_CHECK_INTERVAL:3000}
+  healthcheck:
+    pollInterval: ${EVENTEUM_ETH_HEALTH_CHECK_POLL_INTERVAL:2000}
+  blockStrategy: ${EVENTEUM_BLOCK_STRATEGY:POLL}
+
+broadcaster:
+  type: ${EVENTEUM_BROADCASTER:HTTP}
+  cache:
+    expirationMillis: ${EVENTEUM_CACHE_EXPIRATION_IN_MILLIS:6000000}
+  event:
+    confirmation:
+      numBlocksToWait: ${EVENTEUM_NUM_BLOCKS_TO_WAIT:0}
+      numBlocksToWaitForMissingTx: ${EVENTEUM_NUM_BLOCKS_TO_WAIT_FOR_MISSING_TX:100}
+      numBlocksToWaitBeforeInvalidating: ${EVENTEUM_NUM_BLOCKS_TO_WAIT_BEFORE_INVALIDATING:2}
+  http:
+#    blockEventsUrl: ${HTTP_PROTOCOL_BLOCK_EVENTS_URL:http}://${HTTP_PROTOCOL_BLOCK_EVENTS_HOST:localhost}:${HTTP_PROTOCOL_BLOCK_EVENTS_PORT:8080}/api/v1/listener/block
+    contractEventsUrl: ${HTTP_PROTOCOL_CONTRACT_EVENTS_URL:http}://${HTTP_PROTOCOL_CONTRACT_EVENTS_HOST:localhost}:${HTTP_PROTOCOL_CONTRACT_EVENTS_PORT:8080}/api/v1/surikata/contract-events
+    transactionEventsUrl: ${HTTP_PROTOCOL_TRANSACTION_EVENTS_URL:http}://${HTTP_PROTOCOL_TRANSACTION_EVENTS_HOST:localhost}:${HTTP_PROTOCOL_TRANSACTION_EVENTS_PORT:8080}/api/v1/surikata/transactions
+#    messageEventsUrl: ${HTTP_PROTOCOL_MESSAGE_EVENTS_URL:http}://${HTTP_PROTOCOL_MESSAGE_EVENTS_HOST:localhost}:${HTTP_PROTOCOL_MESSAGE_EVENTS_PORT:8080}/api/v1/message-events
+
+#eventFilters:
+#  - id: Contract.${CONTRACT_ADDRESS:0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9}
+#    node: ${ETH_NODE:default}
+#    contractAddress: ${CONTRACT_ADDRESS:0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9}
+#    eventSpecification:
+#      eventName: ContractEvent
+#      eventSignature: (bytes32,uint256)
+#      web3EventSmartContractClass: io.builders.demo.Contract
+#    correlationId:
+#      type: NON_INDEXED_PARAMETER
+#      index: 0
+
+# Core
+blockchain:
+  url: ${BLOCKCHAIN_NODE_PROTOCOL:http}://${BLOCKCHAIN_NODE_HOST:localhost}:${BLOCKCHAIN_NODE_PORT:8545}
+  chain-id: ${BLOCKCHAIN_CHAIN_ID:1003}
+  gas-limit: ${BLOCKCHAIN_GAS_LIMIT:281474976710654}
+  gas-price: ${BLOCKCHAIN_GAS_PRICE:0}
+  gas-multiplier: ${BLOCKCHAIN_GAS_MULTIPLIER:1.5}
+  #  contracts:
+  #    matchSettlement:
+  #      address: "${CONTRACT_ADDRESS:0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9}"
+  #      contract-class: io.builders.demo.Contract
+  default-provider: database
+
+commandBus:
+  defaultTimeout: 120s
+
+queryBus:
+  defaultTimeout: 120s
+
+#surikata:
+#    event:
+#        mappers:
+#            -   TokenTransferred: io.builders.demo.event.TokenTransferredDltEvent
+#    transaction:
+#        mappers:
+#            -   TokenTransferOrdered: io.builders.demo.event.TokenTransferFailedDltEvent

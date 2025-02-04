@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1725899549-1
+      author: roman
+      changes:
+        - createTable:
+            tableName: custody_key
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: public_key
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: private_key
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: VARCHAR(42)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: custody_provider
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE

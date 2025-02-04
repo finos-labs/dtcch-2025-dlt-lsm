@@ -1,0 +1,62 @@
+# Root EditorConfig file
+root = true
+
+# Global settings for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Groovy source files
+[*.groovy]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+insert_final_newline = true
+
+# Gradle build scripts (Groovy DSL)
+[*.gradle]
+indent_style = space
+indent_size = 4
+
+# Spock specification files
+[*Spec.groovy]
+indent_style = space
+indent_size = 4
+max_line_length = 140
+
+# Groovy scripts for automation or utilities
+[*.gsh]
+indent_style = space
+indent_size = 4
+
+# YAML files for configuration
+[*.yml]
+indent_style = space
+indent_size = 2
+
+# Properties files for Spring Boot config
+[*.properties]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+# JSON files for configs or test data
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Markdown files (for documentation)
+[*.md]
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+# Ignore target and build directories
+[**/target/**]
+insert_final_newline = false
+trim_trailing_whitespace = false
+
+[**/build/**]
+insert_final_newline = false
+trim_trailing_whitespace = false
