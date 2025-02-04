@@ -33,7 +33,8 @@ class Settlement extends BaseEntity {
     BigDecimal securityAmount
 
     @Column(nullable = false)
-    String status = SettlementStatus.PENDING
+    @Enumerated(EnumType.STRING)
+    SettlementStatus status = SettlementStatus.PENDING
 
     @Column
     OffsetDateTime executionDate
