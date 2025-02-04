@@ -1,10 +1,10 @@
 package io.builders.demo.dtcc.application.command.createsettlement
 
+import io.builders.demo.core.command.CommandHandler
+import io.builders.demo.core.event.EventBus
 import io.builders.demo.dtcc.domain.settlement.Settlement
 import io.builders.demo.dtcc.domain.settlement.SettlementRepository
 import io.builders.demo.dtcc.domain.settlement.event.SettlementCreatedEvent
-import io.builders.demo.core.command.CommandHandler
-import io.builders.demo.core.event.EventBus
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -37,6 +37,6 @@ class CreateSettlementCommandHandler implements CommandHandler<SettlementCreated
             cashAmount: settlement.cashAmount,
             securityAmount: settlement.securityAmount,
         ))
-
     }
+
 }

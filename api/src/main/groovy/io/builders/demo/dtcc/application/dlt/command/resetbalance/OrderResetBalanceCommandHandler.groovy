@@ -23,7 +23,10 @@ class OrderResetBalanceCommandHandler implements CommandHandler<ResetBalancesOrd
     @Override
     ResetBalancesOrderedEvent handle(@Valid OrderResetBalanceCommand command) {
         DvpOrchestrator contract = contractLoader.load(DvpOrchestrator)
-        TransactionReceipt txReceipt = contract.send_resetBalances(command.addresses, FormatDecimals.toBigInteger(command.amount)).send()
+        TransactionReceipt txReceipt = contract.send_resetBalances(
+            command.addresses,
+            FormatDecimals.toBigInteger(command.amount)
+        ).send()
         eventBus.publish(new ResetBalancesOrderedEvent(
             transactionId: txReceipt?.transactionHash,
             contractAddress: contract.contractAddress

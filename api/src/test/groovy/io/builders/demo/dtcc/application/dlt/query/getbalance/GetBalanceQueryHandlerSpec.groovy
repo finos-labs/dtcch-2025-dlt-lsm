@@ -2,7 +2,7 @@ package io.builders.demo.dtcc.application.dlt.query.getbalance;
 
 import io.builders.demo.core.BaseSpecification
 import io.builders.demo.core.query.QueryBus
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired
 
 class GetBalanceQueryHandlerSpec extends BaseSpecification {
 

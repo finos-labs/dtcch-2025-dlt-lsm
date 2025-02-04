@@ -1,6 +1,5 @@
 package io.builders.demo.dtcc.domain.user.service
 
-import io.builders.demo.dtcc.domain.settlement.Settlement
 import io.builders.demo.dtcc.domain.settlement.SettlementRepository
 import io.builders.demo.dtcc.domain.user.User
 import io.builders.demo.dtcc.domain.user.UserRepository
@@ -22,4 +21,5 @@ class CheckUserExistsDomainService {
             new UserNotFoundDomainException(id)
         }
     }
+
 }

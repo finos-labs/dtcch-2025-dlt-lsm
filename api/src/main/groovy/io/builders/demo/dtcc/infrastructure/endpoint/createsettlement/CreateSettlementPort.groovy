@@ -4,6 +4,6 @@ import io.builders.demo.dtcc.infrastructure.endpoint.common.SettlementsRequestMo
 
 interface CreateSettlementPort {
 
-    void createSettlements(SettlementsRequestModel settlements)
+    void execute(SettlementsRequestModel settlements)
 
 }

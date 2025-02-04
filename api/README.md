@@ -105,7 +105,7 @@ Follow these steps to create a new project based on this boilerplate:
     - `SURIKATA_DATABASE_*` : Surikata database connection details.
     - `BLOCKCHAIN_NODE_*` : Blockchain node connection settings.
     - `APP_ENV` : Application environment (e.g., `development`, `production`).
-    - `HEDERA_ACCOUNT_ID`: Hedera account id. Account ECDSA 
+    - `HEDERA_ACCOUNT_ID`: Hedera account id. Account ECDSA
     - `HEDERA_ACCOUNT_PRIVATE_KEY`: Hedera account private key. Account ECDSA
     - `DTCC_DEFAULT_ADDRESS`: Default address to call contract. EVM address
     - `DTCC_ACCOUNT_PRIVATE_KEY`: Private key default address to call contract.

@@ -1,9 +1,11 @@
 package io.builders.demo.integration.model
 
 class Balance {
+
     BigDecimal cashAmount
     BigDecimal tokenAmount
 
+    @SuppressWarnings(['FactoryMethodName'])
     static Balance create(BigDecimal cashAmount, BigDecimal tokenAmount) {
         new Balance(cashAmount: cashAmount, tokenAmount: tokenAmount)
     }
@@ -16,4 +18,5 @@ class Balance {
     String toString() {
         "\"cash\": $cashAmount, \"token\": $tokenAmount"
     }
+
 }
