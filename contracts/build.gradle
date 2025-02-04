@@ -20,7 +20,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.codehaus.groovy:groovy-all:3.0.22'
 }
 
 tasks.withType(GroovyCompile).configureEach {
