@@ -1,7 +1,7 @@
 package io.builders.demo.surikata.application.event.converter
 
-import io.builders.demo.api.domain.lsmbatch.event.LsmExecutedDltEvent
-import io.builders.demo.api.domain.lsmbatch.event.LsmTransaction
+import io.builders.demo.dtcc.domain.lsmbatch.event.LsmExecutedDltEvent
+import io.builders.demo.dtcc.domain.lsmbatch.event.LsmTransaction
 import net.consensys.eventeum.dto.event.ContractEventDetails
 import net.consensys.eventeum.dto.event.parameter.EventParameter
 import net.consensys.eventeum.dto.event.parameter.NumberParameter

@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-modify-settlement-user-relations
+      author: carlos
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: settlement
+            baseColumnNames: buyer_id
+            constraintName: fk_settlement_buyer
+            referencedTableName: user
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: settlement
+            baseColumnNames: seller_id
+            constraintName: fk_settlement_seller
+            referencedTableName: user
+            referencedColumnNames: id
+            onDelete: CASCADE
