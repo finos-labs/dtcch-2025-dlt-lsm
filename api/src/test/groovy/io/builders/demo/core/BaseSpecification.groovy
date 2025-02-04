@@ -86,6 +86,8 @@ abstract class BaseSpecification extends Specification {
                 "BLOCKCHAIN_DATABASE_PORT=${postgresPort}",
                 "SURIKATA_DATABASE_HOST=${postgresHost}",
                 "SURIKATA_DATABASE_PORT=${postgresPort}",
+                "DTCC_DATABASE_HOST=${postgresHost}",
+                "DTCC_DATABASE_PORT=${postgresPort}",
                 'spring.profiles.active=test'
             ).applyTo(applicationContext)
         }
