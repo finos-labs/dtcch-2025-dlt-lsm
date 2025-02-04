@@ -2,10 +2,11 @@ package io.builders.demo.dtcc.infrastructure.endpoint.createsettlement
 
 import io.builders.demo.dtcc.application.service.checkusersettlementcreation.CheckUserSettlementAppService
 import io.builders.demo.dtcc.application.service.checkusersettlementcreation.CheckUserSettlementAppServiceModel
-import io.builders.demo.dtcc.infrastructure.endpoint.common.SettlementRequestModel
+import io.builders.demo.dtcc.infrastructure.endpoint.common.SettlementsRequestModel
 import jakarta.validation.Valid
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -19,9 +20,10 @@ class CreateSettlementHttpAdapter implements CreateSettlementPort {
     @Autowired
     ModelMapper modelMapper
 
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping('/settlements')
-    void createSettlements(@RequestBody @Valid List<SettlementRequestModel> settlements) {
-        appService.execute(settlements.forEach { this.modelMapper.map(it, CheckUserSettlementAppServiceModel) })
+    void createSettlements(@RequestBody @Valid SettlementsRequestModel settlements) {
+        appService.execute(settlements.settlements.collect { this.modelMapper.map(it, CheckUserSettlementAppServiceModel) })
     }
 
 }

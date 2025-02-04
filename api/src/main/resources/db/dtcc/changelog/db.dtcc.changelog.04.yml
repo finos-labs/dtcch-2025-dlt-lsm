@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-add-timestamps
+      author: carlos
+      changes:
+        - addColumn:
+            tableName: user
+            columns:
+              - column:
+                  name: created_at
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - addColumn:
+            tableName: lsm_batch
+            columns:
+              - column:
+                  name: created_at
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - addColumn:
+            tableName: settlement
+            columns:
+              - column:
+                  name: created_at
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE

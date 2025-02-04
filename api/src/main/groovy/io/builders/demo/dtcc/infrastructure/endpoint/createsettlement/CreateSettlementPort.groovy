@@ -1,9 +1,9 @@
 package io.builders.demo.dtcc.infrastructure.endpoint.createsettlement
 
-import io.builders.demo.dtcc.infrastructure.endpoint.common.SettlementRequestModel
+import io.builders.demo.dtcc.infrastructure.endpoint.common.SettlementsRequestModel
 
 interface CreateSettlementPort {
 
-    void createSettlements(List<SettlementRequestModel> settlements)
+    void createSettlements(SettlementsRequestModel settlements)
 
 }
