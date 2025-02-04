@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-add users
+      author: carlos
+      changes:
+        - addColumn:
+            tableName: lsm_batch
+            columns:
+              - column:
+                  name: ai_result
+                  type: TEXT
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: dlt_address
+                  value: "0xea0dae3c368d95f6af9776c7d04bbe3f7fe72128"
+              - column:
+                  name: alias
+                  value: "User 1"
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: dlt_address
+                  value: "0x471aafefe7d067e6606d7ad18fd17f173fab243a"
+              - column:
+                  name: alias
+                  value: "User 2"
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: dlt_address
+                  value: "0x619fee14d654dfc089ac16c6ba1311260046ca1d"
+              - column:
+                  name: alias
+                  value: "User 3"
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: dlt_address
+                  value: "0x743c4439a22096b81438746baacc59300c6e1bd0"
+              - column:
+                  name: alias
+                  value: "User 4"
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: dlt_address
+                  value: "0xfb1c1f5940320485605859f440fca6c3fb88359d"
+              - column:
+                  name: alias
+                  value: "User 5"
