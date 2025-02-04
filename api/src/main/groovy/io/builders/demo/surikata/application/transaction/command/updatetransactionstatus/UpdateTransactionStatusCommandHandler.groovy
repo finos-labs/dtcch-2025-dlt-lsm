@@ -26,17 +26,17 @@ class UpdateTransactionStatusCommandHandler
 
     @Override
     TransactionStatusUpdatedEvent handle(@Valid UpdateTransactionStatusCommand command) {
-//        Transaction transaction = checkTransactionExistsDomainService.execute(command.id)
-//        TransactionStatus currentStatus = transaction.status
-//
-//        transaction.status = command.status as TransactionStatus
-//        repository.save(transaction)
-//
-//        eventBus.publish(new TransactionStatusUpdatedEvent(
-//            id: transaction.id,
-//            previousStatus: currentStatus,
-//            newStatus: transaction.status
-//        ))
+        Transaction transaction = checkTransactionExistsDomainService.execute(command.id)
+        TransactionStatus currentStatus = transaction.status
+
+        transaction.status = command.status as TransactionStatus
+        repository.save(transaction)
+
+        eventBus.publish(new TransactionStatusUpdatedEvent(
+            id: transaction.id,
+            previousStatus: currentStatus,
+            newStatus: transaction.status
+        ))
     }
 
 }
