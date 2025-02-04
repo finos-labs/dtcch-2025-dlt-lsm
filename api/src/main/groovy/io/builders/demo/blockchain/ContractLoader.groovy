@@ -1,9 +1,8 @@
 package io.builders.demo.blockchain
 
 import io.builders.demo.blockchain.configuration.BlockchainConfigurationProperties
-import io.builders.demo.blockchain.domain.custody.CustodyKey
-import io.builders.demo.blockchain.domain.custody.service.CheckCustodyKeyExistsDomainService
 import io.builders.demo.blockchain.exception.ContractNotFoundException
+import io.builders.demo.dtcc.infrastructure.configuration.DtccConfigurationProperties
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.web3j.crypto.Credentials
@@ -28,7 +27,7 @@ class ContractLoader {
     private BlockchainConfigurationProperties blockchainProperties
 
     @Autowired
-    private CheckCustodyKeyExistsDomainService checkCustodyKeyExistsDomainService
+    DtccConfigurationProperties dtccConfigurationProperties
 
     @Autowired
     private TransactionReceiptProcessor transactionReceiptProcessor
@@ -36,26 +35,26 @@ class ContractLoader {
     @Autowired
     private DefaultDistributedNonceProvider defaultNonceProvider
 
-    <T extends Contract> T load(Class<T> contractClass, String address) throws Exception {
+    <T extends Contract> T load(Class<T> contractClass) throws Exception {
         BlockchainConfigurationProperties.ContractData<T> contractData = blockchainProperties.find(contractClass)
         if (contractData == null) {
             throw new ContractNotFoundException(contractClass)
         }
-        CustodyKey custodyKey = checkCustodyKeyExistsDomainService.executeByAddress(address)
+
         Method loadMethod = contractClass.getMethod('load', String, Web3j, TransactionManager, ContractGasProvider)
-        Credentials credentials = Credentials.create(custodyKey.privateKey)
+        Credentials credentials = Credentials.create(dtccConfigurationProperties.privateKey)
         return contractClass.cast(loadMethod.invoke(
-                null,
-                contractData.address,
+            null,
+            contractData.address,
+            web3j,
+            new DefaultTransactionManager(
                 web3j,
-                new DefaultTransactionManager(
-                        web3j,
-                        credentials,
-                        blockchainProperties.chainId,
-                        transactionReceiptProcessor,
-                        defaultNonceProvider
-                ),
-                gasProvider
+                credentials,
+                blockchainProperties.chainId,
+                transactionReceiptProcessor,
+                defaultNonceProvider
+            ),
+            gasProvider
         ))
     }
 
