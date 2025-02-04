@@ -45,17 +45,31 @@ database:
   type: SQL
 
 ethereum:
+  nodes: []
+
+hashgraph:
   nodes:
-    - name: default
-      url: ${EVENTEUM_ETH_NODE_PROTOCOL:http}://${EVENTEUM_ETH_NODE_HOST:localhost}:${EVENTEUM_ETH_NODE_PORT:8545}
-      blockStrategy: ${EVENTEUM_ETH_BLOCK_STRATEGY:POLL}
-      syncingThreshold: ${EVENTEUM_ETH_SYNCING_THRESHOLD:100}
-      healthcheckInterval: ${EVENTEUM_ETH_HEALTH_CHECK_INTERVAL:3000}
-  healthcheck:
-    pollInterval: ${EVENTEUM_ETH_HEALTH_CHECK_POLL_INTERVAL:2000}
-  blockStrategy: ${EVENTEUM_BLOCK_STRATEGY:POLL}
+    - name: hedera
+      type: MIRROR
+      url: ${HEDERA_NODE_URL:https://testnet.mirrornode.hedera.com}
+      limitPerRequest: 50
+      blockStrategy: POLL
+      addTransactionRevertReason: true
+      pollingInterval: 1800
+      maxIdleConnections: 10
+      keepAliveDuration: 15000
+      connectionTimeout: 7000
+      readTimeout: 180000
+      healthcheckInterval: 5000
+      numBlocksToWait: 0
+      numBlocksToWaitForMissingTx: 0
+      numBlocksToWaitBeforeInvalidating: 0
+      maxUnsyncedBlocksForFilter: 50
+      syncingThreshold: 100
+      initialStartBlock: 15314535
 
 broadcaster:
+  enableBlockNotifications: false
   type: ${EVENTEUM_BROADCASTER:HTTP}
   cache:
     expirationMillis: ${EVENTEUM_CACHE_EXPIRATION_IN_MILLIS:6000000}
@@ -65,33 +79,39 @@ broadcaster:
       numBlocksToWaitForMissingTx: ${EVENTEUM_NUM_BLOCKS_TO_WAIT_FOR_MISSING_TX:100}
       numBlocksToWaitBeforeInvalidating: ${EVENTEUM_NUM_BLOCKS_TO_WAIT_BEFORE_INVALIDATING:2}
   http:
-#    blockEventsUrl: ${HTTP_PROTOCOL_BLOCK_EVENTS_URL:http}://${HTTP_PROTOCOL_BLOCK_EVENTS_HOST:localhost}:${HTTP_PROTOCOL_BLOCK_EVENTS_PORT:8080}/api/v1/listener/block
+    #    blockEventsUrl: ${HTTP_PROTOCOL_BLOCK_EVENTS_URL:http}://${HTTP_PROTOCOL_BLOCK_EVENTS_HOST:localhost}:${HTTP_PROTOCOL_BLOCK_EVENTS_PORT:8080}/api/v1/listener/block
     contractEventsUrl: ${HTTP_PROTOCOL_CONTRACT_EVENTS_URL:http}://${HTTP_PROTOCOL_CONTRACT_EVENTS_HOST:localhost}:${HTTP_PROTOCOL_CONTRACT_EVENTS_PORT:8080}/api/v1/surikata/contract-events
     transactionEventsUrl: ${HTTP_PROTOCOL_TRANSACTION_EVENTS_URL:http}://${HTTP_PROTOCOL_TRANSACTION_EVENTS_HOST:localhost}:${HTTP_PROTOCOL_TRANSACTION_EVENTS_PORT:8080}/api/v1/surikata/transactions
 #    messageEventsUrl: ${HTTP_PROTOCOL_MESSAGE_EVENTS_URL:http}://${HTTP_PROTOCOL_MESSAGE_EVENTS_HOST:localhost}:${HTTP_PROTOCOL_MESSAGE_EVENTS_PORT:8080}/api/v1/message-events
 
-#eventFilters:
-#  - id: Contract.${CONTRACT_ADDRESS:0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9}
-#    node: ${ETH_NODE:default}
-#    contractAddress: ${CONTRACT_ADDRESS:0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9}
-#    eventSpecification:
-#      eventName: ContractEvent
-#      eventSignature: (bytes32,uint256)
-#      web3EventSmartContractClass: io.builders.demo.Contract
-#    correlationId:
-#      type: NON_INDEXED_PARAMETER
-#      index: 0
+eventFilters:
+  - id: DvpOrchestratorLsmExecuted.${CONTRACT_ADDRESS:0x6fbDFdF047F33b65D09Ba9Eaa8937947e6207302}
+    node: ${ETH_NODE:hedera}
+    contractAddress: ${CONTRACT_ADDRESS:0x6fbDFdF047F33b65D09Ba9Eaa8937947e6207302}
+    eventSpecification:
+      eventName: LsmExecuted
+      eventSignature: ((address,address,uint256,address)[])
+      web3EventSmartContractClass: org.iobuilders.dtcc.contracts.DvpOrchestrator
+    correlationId:
+      type: NON_INDEXED_PARAMETER
+      index: 0
+
+transactionFilters:
+  - nodeName: ${ETH_NODE:hedera}
+    type: "TO_ADDRESS"
+    transactionIdentifierValue: ${CONTRACT_ADDRESS:0x6fbDFdF047F33b65D09Ba9Eaa8937947e6207302}
+    statuses: ['FAILED']
 
 # Core
 blockchain:
-  url: ${BLOCKCHAIN_NODE_PROTOCOL:http}://${BLOCKCHAIN_NODE_HOST:localhost}:${BLOCKCHAIN_NODE_PORT:8545}
-  chain-id: ${BLOCKCHAIN_CHAIN_ID:1003}
+  url: https://testnet.hashio.io/api
+  chain-id: ${BLOCKCHAIN_CHAIN_ID:296}
   gas-limit: ${BLOCKCHAIN_GAS_LIMIT:281474976710654}
   gas-price: ${BLOCKCHAIN_GAS_PRICE:0}
   gas-multiplier: ${BLOCKCHAIN_GAS_MULTIPLIER:1.5}
   #  contracts:
   #    matchSettlement:
-  #      address: "${CONTRACT_ADDRESS:0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9}"
+  #      address: "${CONTRACT_ADDRESS:0x6fbDFdF047F33b65D09Ba9Eaa8937947e6207302}"
   #      contract-class: io.builders.demo.Contract
   default-provider: database
 
@@ -101,10 +121,30 @@ commandBus:
 queryBus:
   defaultTimeout: 120s
 
-#surikata:
-#    event:
-#        mappers:
-#            -   TokenTransferred: io.builders.demo.event.TokenTransferredDltEvent
+surikata:
+  event:
+    mappers:
+      -   LsmExecuted: io.builders.demo.api.domain.lsmbatch.event.LsmExecutedDltEvent
 #    transaction:
 #        mappers:
 #            -   TokenTransferOrdered: io.builders.demo.event.TokenTransferFailedDltEvent
+
+hedera:
+  testnet: ${HEDERA_NODE_TESTNET:true}
+  account:
+    id: ${HEDERA_ACCOUNT_ID}
+    privateKey: ${HEDERA_ACCOUNT_PRIVATE_KEY}
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    net.consensys: DEBUG
+    net.consensys.configs: ERROR
+    org.springframework.amqp: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c: %M - %m%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c: %M - %m%n"
+
+dtcc:
+  defaultAddress: ${DTCC_DEFAULT_ADDRESS}
+  privateKey: ${DTCC_ACCOUNT_PRIVATE_KEY}

@@ -61,6 +61,8 @@ dependencies {
     // Database
     implementation 'org.liquibase:liquibase-core'
 
+    implementation 'org.iobuilders.dtcc:dtcc-contracts:0.0.1'
+
     // Development tools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
