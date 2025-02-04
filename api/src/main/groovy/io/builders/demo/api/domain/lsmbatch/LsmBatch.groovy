@@ -22,4 +22,7 @@ class LsmBatch extends BaseEntity {
     @OneToMany(mappedBy = "lsmBatch", cascade = CascadeType.ALL)
     List<Settlement> settlements
 
+    @Column
+    String aiResult
+
 }
