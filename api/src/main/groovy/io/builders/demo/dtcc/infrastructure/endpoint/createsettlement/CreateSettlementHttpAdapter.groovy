@@ -20,8 +20,9 @@ class CreateSettlementHttpAdapter implements CreateSettlementPort {
     ModelMapper modelMapper
 
     @PostMapping('/settlements')
+    @Override
     void createSettlements(@RequestBody @Valid List<SettlementRequestModel> settlements) {
-        appService.execute(settlements.forEach { this.modelMapper.map(it, CheckUserSettlementAppServiceModel) })
+        appService.execute(settlements.collect { this.modelMapper.map(it, CheckUserSettlementAppServiceModel) })
     }
 
 }
