@@ -5,5 +5,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface SettlementRepository extends JpaRepository<Settlement, Integer> {
-        List<Settlement> findAllByStatusIs(SettlementStatus status)
+
+    List<Settlement> findAllByStatusIs(SettlementStatus status)
+
 }

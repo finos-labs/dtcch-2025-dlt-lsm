@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping(path = '/api/v1/', produces = 'application/json')
 @CrossOrigin(origins = '*')
-class StartLsmBatchHttpAdapter implements StartLsmBatchPort{
+class StartLsmBatchHttpAdapter implements StartLsmBatchPort {
 
     @Autowired
     CommandBus commandBus
@@ -21,4 +21,5 @@ class StartLsmBatchHttpAdapter implements StartLsmBatchPort{
     void start() {
         commandBus.executeAndWait(new StartLsmBatchCommand())
     }
+
 }

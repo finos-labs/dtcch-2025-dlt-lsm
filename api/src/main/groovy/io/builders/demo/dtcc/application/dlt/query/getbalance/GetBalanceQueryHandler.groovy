@@ -27,4 +27,5 @@ class GetBalanceQueryHandler implements QueryHandler<AccountBalancesQueryModel, 
             )
         })
     }
+
 }

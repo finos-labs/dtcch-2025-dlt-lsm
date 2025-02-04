@@ -32,4 +32,5 @@ class OrderResetBalanceCommandHandler implements CommandHandler<ResetBalancesOrd
             contractAddress: contract.contractAddress
         ))
     }
+
 }

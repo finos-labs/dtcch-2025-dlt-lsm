@@ -7,6 +7,7 @@ import io.builders.demo.integration.model.IASettlement
 import org.springframework.beans.factory.annotation.Autowired
 
 class GeminiIAAdapterSpec extends BaseSpecification {
+
     @Autowired
     GeminiIAAdapter geminiIAAdapter
 
@@ -29,7 +30,7 @@ class GeminiIAAdapterSpec extends BaseSpecification {
 
         then:
         noExceptionThrown()
-        combination == ["AA", "AB", "AC"]
+        combination == ['AA', 'AB', 'AC']
     }
 
 }

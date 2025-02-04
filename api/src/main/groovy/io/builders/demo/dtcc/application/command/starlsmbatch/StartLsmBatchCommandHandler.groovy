@@ -8,12 +8,9 @@ import io.builders.demo.dtcc.domain.lsmbatch.event.LsmBatchStartedEvent
 import io.builders.demo.dtcc.domain.settlement.Settlement
 import io.builders.demo.dtcc.domain.settlement.SettlementRepository
 import io.builders.demo.dtcc.domain.settlement.SettlementStatus
-import io.builders.demo.dtcc.domain.settlement.event.SettlementCreatedEvent
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-
-import java.time.OffsetDateTime
 
 @Component
 class StartLsmBatchCommandHandler implements CommandHandler<LsmBatchStartedEvent, StartLsmBatchCommand> {
@@ -41,6 +38,6 @@ class StartLsmBatchCommandHandler implements CommandHandler<LsmBatchStartedEvent
             id: lsmBatch.id,
             settlements: settlementPending*.id
         ))
-
     }
+
 }

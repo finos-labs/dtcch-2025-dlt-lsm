@@ -9,4 +9,5 @@ class UserNotFoundDomainException extends EntityNotFoundDomainException {
     UserNotFoundDomainException(Integer id) {
         super(String.format(DEFAULT_MESSAGE, id))
     }
+
 }
