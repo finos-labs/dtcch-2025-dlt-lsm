@@ -109,6 +109,7 @@ Follow these steps to create a new project based on this boilerplate:
     - `HEDERA_ACCOUNT_PRIVATE_KEY`: Hedera account private key. Account ECDSA
     - `DTCC_DEFAULT_ADDRESS`: Default address to call contract. EVM address
     - `DTCC_ACCOUNT_PRIVATE_KEY`: Private key default address to call contract.
+    - `AI_API_KEY`: API key for AI
 
 - **Profiles:** Use Spring Profiles (`application-{profile}.yml`) for environment-specific configurations.
 
