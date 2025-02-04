@@ -42,51 +42,30 @@ def validate_selection(data, selected_ids):
     Returns True if the selection is valid, False otherwise.
     """
     settlements = data["settlements"]
-    balances = data["balances"]
-
-    # Initialize net effects for each client
-    # These represent the cumulative effect of all selected settlements.
-    # For a buyer, cash is reduced and tokens are increased.
-    # For a seller, cash is increased and tokens are reduced.
-    net_effects = {
-        client: {
-            "cash": data["cashAmount"],
-            "token": data["tokenAmount"]
-        }
-        for client, data in balances.items()
-    }
-
-    print(net_effects)
+    balances = {b["client"]: {"cash": b["cashAmount"], "token": b["tokenAmount"]} for b in data["balances"]}
 
     # Filter selected settlements
     selected_settlements = [s for s in settlements if s["id"] in selected_ids]
 
-    # Update net effects for each settlement
+    # Update balances based on selected settlements
     for s in selected_settlements:
         buyer, seller = s["buyer"], s["seller"]
         cash, token = s["cashAmount"], s["tokenAmount"]
 
         # Buyer: cash is deducted, tokens are added
-        net_effects[buyer]["cash"] -= cash
-        print(f"Client {buyer} has {cash} cash left. Now his balance is {net_effects[buyer]['cash']}")
-        net_effects[buyer]["token"] += token
-        print(f"Client {buyer} has {token} token left. Now his balance is {net_effects[buyer]['token']}")
+        balances[buyer]["cash"] -= cash
+        balances[buyer]["token"] += token
 
         # Seller: cash is added, tokens are deducted
-        net_effects[seller]["cash"] += cash
-        print(f"Client {seller} has {cash} cash left. Now his balance is {net_effects[seller]['cash']}")
-        net_effects[seller]["token"] -= token
-        print(f"Client {seller} has {token} token left. Now his balance is {net_effects[seller]['token']}")
+        balances[seller]["cash"] += cash
+        balances[seller]["token"] -= token
 
-    # Compare resulting balances (initial balance + net effect) with zero
+    # Validate balances
     valid = True
     print("\nSummary of resulting balances after applying settlements:")
-    for client, effect in net_effects.items():
-        cash = effect["cash"]
-        token = effect["token"]
-
-        print(f"Client '{client}': Final cash = {cash:.3f} (initial {balances[client]["cashAmount"]:.3f}), "
-              f"Final tokens = {token:.3f} (initial {balances[client]["tokenAmount"]:.3f}), ")
+    for client, balance in balances.items():
+        cash, token = balance["cash"], balance["token"]
+        print(f"Client '{client}': Final cash = {cash:.3f}, Final tokens = {token:.3f}")
 
         if cash < 0:
             print(f"  -> ERROR: Client '{client}' would have a negative cash balance.")
@@ -101,12 +80,13 @@ def validate_selection(data, selected_ids):
 def main():
     parser = argparse.ArgumentParser(description="Validates settlement selection feasibility.")
     parser.add_argument("--data", default="data.json", help="JSON file with settlements and balances (e.g., data.json)")
-    parser.add_argument("--selected", default="output.json", help="JSON file with selected settlement IDs (e.g., output.json)")
+    parser.add_argument("--selected", default="output.json",
+                        help="JSON file with selected settlement IDs (e.g., output.json)")
     args = parser.parse_args()
 
     # Load data files
     data = load_json(args.data)
-    selected_ids = load_json(args.selected)["output"]
+    selected_ids = set(load_json(args.selected)["output"])  # Convert to set for faster lookup
 
     print("Selected settlement IDs:")
     print(selected_ids, "\n")
