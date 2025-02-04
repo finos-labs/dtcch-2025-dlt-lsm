@@ -1,8 +1,9 @@
 package io.builders.demo.api.infrastructure.endpoint.common
 
+import jakarta.validation.constraints.NotNull
+
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import jakarta.validation.constraints.NotNull
 
 @EqualsAndHashCode
 @ToString

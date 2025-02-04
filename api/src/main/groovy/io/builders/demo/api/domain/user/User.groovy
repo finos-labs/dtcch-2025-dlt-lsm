@@ -1,8 +1,9 @@
 package io.builders.demo.api.domain.user
 
-import groovy.transform.EqualsAndHashCode
 import io.builders.demo.core.domain.BaseEntity
 import jakarta.persistence.*
+
+import groovy.transform.EqualsAndHashCode
 
 @Entity
 @Table

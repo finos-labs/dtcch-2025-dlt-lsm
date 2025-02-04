@@ -1,5 +1,7 @@
 package io.builders.demo.core.query
 
+import static io.builders.demo.core.serialize.Serializer.serializeQuery
+
 import io.builders.demo.core.exception.QueryHandlerNotFoundException
 import io.builders.demo.core.exception.QueryTimeoutException
 import io.builders.demo.core.reflections.ReflectionsUtils
@@ -20,8 +22,6 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 import groovy.util.logging.Slf4j
-
-import static io.builders.demo.core.serialize.Serializer.serializeQuery
 
 @Component
 @Primary

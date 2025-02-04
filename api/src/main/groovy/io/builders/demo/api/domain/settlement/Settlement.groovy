@@ -1,11 +1,12 @@
 package io.builders.demo.api.domain.settlement
 
-import groovy.transform.EqualsAndHashCode
 import io.builders.demo.api.domain.lsmbatch.LsmBatch
 import io.builders.demo.core.domain.BaseEntity
 import jakarta.persistence.*
 
 import java.time.OffsetDateTime
+
+import groovy.transform.EqualsAndHashCode
 
 @Entity
 @Table
@@ -35,7 +36,7 @@ class Settlement extends BaseEntity {
     OffsetDateTime executionDate
 
     @ManyToOne
-    @JoinColumn(name = "lsm_batch_id", nullable = false)
+    @JoinColumn(name = 'lsm_batch_id', nullable = false)
     LsmBatch lsmBatch
 
 }
