@@ -2,7 +2,7 @@ package io.builders.demo.dtcc.application.query.common
 
 import java.time.OffsetDateTime
 
-class LsmBatchSettlementQueryModel {
+class SettlementQueryModel {
 
     Integer id
     String buyerAlias

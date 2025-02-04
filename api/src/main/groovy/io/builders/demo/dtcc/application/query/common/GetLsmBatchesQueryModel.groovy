@@ -7,6 +7,6 @@ class GetLsmBatchesQueryModel {
     Integer id
     OffsetDateTime executionDate
     String aiResult
-    List<LsmBatchSettlementQueryModel> settlements
+    List<SettlementQueryModel> settlements
 
 }
