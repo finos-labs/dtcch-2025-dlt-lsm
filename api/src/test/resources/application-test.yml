@@ -2,7 +2,7 @@ ia:
   url: https://generativelanguage.googleapis.com/v1beta/tunedModels
 #  model: settlement-combinations-v01-kvqvb3romxts
   model: settlement-combinations-v02-cy7ao9x4l9eu
-  apiKey: 
+  apiKey:
 
 spring:
   datasource:

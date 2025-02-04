@@ -14,7 +14,7 @@ class CreateTransactionAdapter implements CreateTransactionPort {
 
     @Override
     void receive(TransactionEvent event) {
-        commandBus.executeAndWait(new CreateTransactionCommand(
+        commandBus.execute(new CreateTransactionCommand(
             hash: event.transactionId,
             eventName: event.eventType,
             contractAddress: event.contractAddress
