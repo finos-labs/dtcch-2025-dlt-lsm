@@ -31,4 +31,5 @@ class OrderExecuteLsmCommandHandler implements CommandHandler<ExecuteLsmOrderedE
             contractAddress: contract.contractAddress
         ))
     }
+
 }

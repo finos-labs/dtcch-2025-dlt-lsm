@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface LsmBatchRepository extends JpaRepository<LsmBatch, Integer> {
 
-    @Query("SELECT b FROM LsmBatch b JOIN FETCH b.settlements")
+    @Query('SELECT b FROM LsmBatch b JOIN FETCH b.settlements')
     List<LsmBatch> findAllWithSettlements()
 
 }

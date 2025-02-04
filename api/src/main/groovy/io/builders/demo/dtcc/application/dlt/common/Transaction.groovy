@@ -6,4 +6,5 @@ class Transaction {
     String to
     BigDecimal amount
     String token
+
 }

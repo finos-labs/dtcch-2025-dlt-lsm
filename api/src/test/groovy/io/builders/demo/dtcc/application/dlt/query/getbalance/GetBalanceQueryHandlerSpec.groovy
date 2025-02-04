@@ -1,4 +1,4 @@
-package io.builders.demo.dtcc.application.dlt.query.getbalance;
+package io.builders.demo.dtcc.application.dlt.query.getbalance
 
 import io.builders.demo.core.BaseSpecification
 import io.builders.demo.core.query.QueryBus

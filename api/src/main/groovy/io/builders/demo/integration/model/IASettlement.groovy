@@ -5,6 +5,7 @@ import groovy.transform.ToString
 @ToString
 @SuppressWarnings(['FactoryMethodName'])
 class IASettlement {
+
     private static String currentCode = 'AA'
 
     BigDecimal tokenAmount
@@ -23,7 +24,6 @@ class IASettlement {
             id: nextCode()
         )
     }
-
 
     BigDecimal cashAmountByClient(String client) {
         if (client == buyer) {

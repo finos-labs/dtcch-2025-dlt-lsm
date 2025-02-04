@@ -6,13 +6,13 @@ import jakarta.persistence.*
 import groovy.transform.EqualsAndHashCode
 
 @Entity
-@Table(name = "\"user\"")
+@Table(name = '\"user\"')
 @EqualsAndHashCode
 class User extends BaseEntity {
 
     @Id
     @GeneratedValue
-    @Column(name = "id")
+    @Column(name = 'id')
     Integer id
 
     @Column(nullable = false)

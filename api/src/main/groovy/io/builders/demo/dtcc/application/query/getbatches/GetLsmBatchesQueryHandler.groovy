@@ -26,4 +26,5 @@ class GetLsmBatchesQueryHandler implements QueryHandler<List<GetLsmBatchesQueryM
             this.modelMapper.map(it, GetLsmBatchesQueryModel)
         }
     }
+
 }

@@ -19,11 +19,11 @@ class Settlement extends BaseEntity {
     Integer id
 
     @ManyToOne
-    @JoinColumn(name = "buyer_id", nullable = false)
+    @JoinColumn(name = 'buyer_id', nullable = false)
     User buyer
 
     @ManyToOne
-    @JoinColumn(name = "seller_id", nullable = false)
+    @JoinColumn(name = 'seller_id', nullable = false)
     User seller
 
     @Column(nullable = false)
