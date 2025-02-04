@@ -1,0 +1,27 @@
+ext {
+    set('web3jCliVersion', '1.6.1')
+    set('web3jVersion', '4.12.1')
+    set('targetPackage', 'org.iobuilders.dtcc.contracts')
+}
+
+dependencies {
+    implementation "org.web3j:core:$web3jVersion"
+}
+
+tasks.register('compileContracts', Exec) {
+    commandLine 'sh', '-c', 'npm install && npm run compile'
+}
+
+tasks.register('generateContracts') {
+    dependsOn('compileContracts')
+    doLast {
+        exec {
+            commandLine 'scripts/web3j/web3jSourceGenerator.sh', "v$web3jCliVersion",
+                // If the contract is located in the root of the contracts directory, use '.' to indicate. Otherwise, specify the subdirectory where the contract is located.
+                '.:DvpOrchestrator',
+                "$targetPackage"
+        }
+
+        println 'All contracts updated'
+    }
+}
