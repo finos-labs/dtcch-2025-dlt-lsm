@@ -17,7 +17,7 @@ class StartLsmBatchHttpAdapter implements StartLsmBatchPort {
     CommandBus commandBus
 
     @Override
-    @PostMapping('lsmBatch')
+    @PostMapping('batches')
     void start() {
         commandBus.executeAndWait(new StartLsmBatchCommand())
     }
