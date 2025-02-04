@@ -4,6 +4,6 @@ class AccountBalance {
 
     BigDecimal cashToken
     BigDecimal securityToken
-    String user
+    String userAddress
 
 }

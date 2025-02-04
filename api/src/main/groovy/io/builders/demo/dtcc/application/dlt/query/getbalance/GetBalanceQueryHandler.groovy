@@ -23,7 +23,7 @@ class GetBalanceQueryHandler implements QueryHandler<AccountBalancesQueryModel, 
             new AccountBalance(
                 cashToken: FormatDecimals.toBigDecimal(it.cashToken),
                 securityToken: FormatDecimals.toBigDecimal(it.securityToken),
-                user: it.user
+                userAddress: it.user
             )
         })
     }
