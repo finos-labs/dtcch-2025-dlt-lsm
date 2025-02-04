@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "3f0c6994-0789-422e-a840-5bf47105effb",
+		"_postman_id": "bd36d296-477d-48e4-b740-47de575e3309",
 		"name": "DTCC",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "14964213"
+		"_exporter_id": "27546272"
 	},
 	"item": [
 		{
@@ -31,6 +31,36 @@
 						"api",
 						"v1",
 						"add-balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reset balance",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"amount\": 100000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/reset-balance",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"reset-balance"
 					]
 				}
 			},
@@ -91,7 +121,10 @@
 			"name": "Get pending settlements",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": ""
+				}
 			},
 			"response": []
 		},
@@ -99,7 +132,10 @@
 			"name": "Start batch",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": ""
+				}
 			},
 			"response": []
 		}
