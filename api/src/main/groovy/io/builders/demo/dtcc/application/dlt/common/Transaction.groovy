@@ -7,4 +7,3 @@ class Transaction {
     BigDecimal amount
     String token
 }
-

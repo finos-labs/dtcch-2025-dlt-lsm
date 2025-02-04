@@ -12,23 +12,24 @@ class GeminiIAAdapterSpec extends BaseSpecification {
 
     void 'IA must return a response'() {
         given:
-        List<String> clients = ['w','x', 'y', 'z']
+        List<String> clients = ['w', 'x', 'y', 'z']
         List<IASettlement> settlements = [
             IASettlement.create(BigDecimal.TEN, BigDecimal.ONE, clients[0], clients[1]),
             IASettlement.create(BigDecimal.TEN, BigDecimal.ONE, clients[1], clients[2]),
             IASettlement.create(BigDecimal.TEN, BigDecimal.ONE, clients[2], clients[3])
         ]
         Map<String, Balance> balancesMap = [
-            (clients[0]) : Balance.create(BigDecimal.TEN, BigDecimal.TEN),
-            (clients[1]) : Balance.create(BigDecimal.TEN, BigDecimal.TEN),
-            (clients[2]) : Balance.create(BigDecimal.TEN, BigDecimal.TEN),
-            (clients[3]) : Balance.create(BigDecimal.TEN, BigDecimal.TEN)
+            (clients[0]): Balance.create(BigDecimal.TEN, BigDecimal.TEN),
+            (clients[1]): Balance.create(BigDecimal.TEN, BigDecimal.TEN),
+            (clients[2]): Balance.create(BigDecimal.TEN, BigDecimal.TEN),
+            (clients[3]): Balance.create(BigDecimal.TEN, BigDecimal.TEN)
         ]
         when:
         List<String> combination = geminiIAAdapter.obtainIACombination(new IARequest(settlements: settlements, balances: balancesMap))
 
         then:
         noExceptionThrown()
-        combination == ["AA","AB","AC"]
+        combination == ["AA", "AB", "AC"]
     }
+
 }

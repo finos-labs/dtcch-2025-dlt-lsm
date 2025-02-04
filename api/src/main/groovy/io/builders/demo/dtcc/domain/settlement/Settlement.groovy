@@ -1,8 +1,8 @@
 package io.builders.demo.dtcc.domain.settlement
 
+import io.builders.demo.core.domain.BaseEntity
 import io.builders.demo.dtcc.domain.lsmbatch.LsmBatch
 import io.builders.demo.dtcc.domain.user.User
-import io.builders.demo.core.domain.BaseEntity
 import jakarta.persistence.*
 
 import java.time.OffsetDateTime

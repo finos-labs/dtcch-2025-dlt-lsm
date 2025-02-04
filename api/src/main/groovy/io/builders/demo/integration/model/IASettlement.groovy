@@ -3,6 +3,7 @@ package io.builders.demo.integration.model
 import groovy.transform.ToString
 
 @ToString
+@SuppressWarnings(['FactoryMethodName'])
 class IASettlement {
     private static String currentCode = 'AA'
 
@@ -14,7 +15,13 @@ class IASettlement {
     String id
 
     static IASettlement create(BigDecimal tokenAmount, BigDecimal cashAmount, String buyer, String seller) {
-        new IASettlement( tokenAmount: tokenAmount, cashAmount: cashAmount, buyer: buyer, seller: seller, id: nextCode())
+        new IASettlement(
+            tokenAmount: tokenAmount,
+            cashAmount: cashAmount,
+            buyer: buyer,
+            seller: seller,
+            id: nextCode()
+        )
     }
 
 

@@ -1,9 +1,9 @@
 package io.builders.demo.dtcc.infrastructure.endpoint.common
 
+import java.time.OffsetDateTime
+
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-
-import java.time.OffsetDateTime
 
 @EqualsAndHashCode
 @ToString
