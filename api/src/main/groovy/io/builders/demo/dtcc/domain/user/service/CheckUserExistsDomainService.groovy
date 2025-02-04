@@ -1,5 +1,7 @@
 package io.builders.demo.dtcc.domain.user.service
 
+import io.builders.demo.dtcc.domain.settlement.Settlement
+import io.builders.demo.dtcc.domain.settlement.SettlementRepository
 import io.builders.demo.dtcc.domain.user.User
 import io.builders.demo.dtcc.domain.user.UserRepository
 import io.builders.demo.dtcc.domain.user.exception.UserNotFoundDomainException
@@ -11,6 +13,9 @@ class CheckUserExistsDomainService {
 
     @Autowired
     UserRepository repository
+
+    @Autowired
+    SettlementRepository settlementRepository
 
     User execute(Integer id) throws UserNotFoundDomainException {
         repository.findById(id).orElseThrow {
