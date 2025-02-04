@@ -1,0 +1,14 @@
+{
+	"exclude_informational": true,
+	"exclude_optimization": true,
+	"exclude_low": true,
+	"exclude_medium": true,
+	"exclude_high": false,
+	"solc": "solc",
+	"solc_args": "",
+	"solc_disable_warnings": false,
+	"truffle_ignore_compile": false,
+	"disable_color": false,
+	"filter_paths": "node_modules/.*/.*",
+	"legacy_ast": false
+}

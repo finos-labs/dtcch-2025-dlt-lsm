@@ -1,0 +1,51 @@
+{
+  "name": "dtcc-contracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "npx hardhat clean",
+    "compile": "npx hardhat compile",
+    "compile:force": "npm run clean && npm run compile",
+    "test": "npx hardhat test",
+    "test:local": "npx hardhat test --config hardhat_node.config.ts --network hardhat_local",
+    "test:gas": "REPORT_GAS=true npx hardhat test",
+    "coverage": "npx hardhat clean && npx hardhat coverage",
+    "contract-size": "npx hardhat size-contracts",
+    "lint": "npx eslint .  && solhint 'contracts/**/*.sol'",
+    "lint:fix": "npx eslint . --fix && solhint 'contracts/**/*.sol' --fix --noPrompt",
+    "format": "prettier --check \"**/*.{ts,js,sol}\"",
+    "format:fix": "prettier --write \"**/*.{ts,js,sol}\"",
+    "fix": "npm run format:fix; npm run lint:fix",
+    "deploy:hardhat": "npx hardhat run scripts/deploy/deployContracts.ts --config hardhat_node.config.ts --network hardhat_local",
+    "node": "npx hardhat node --config hardhat_node.config.ts",
+    "security": "docker run -t --rm -v /var/run/docker.sock:/var/run/docker.sock -v \"$(pwd)\":\"/home/ethsec/contracts\" -w \"/home/ethsec/contracts\" -u 0:0 trailofbits/eth-security-toolbox /bin/bash -c \"solc-select install 0.8.24 && solc-select use 0.8.24 && IS_SLITHER=true slither . --solc-remaps @=node_modules/@ && npm run clean\"",
+    "eth-security-toolbox": "docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v \"$(pwd)\":\"/home/ethsec/contracts\" -w \"/home/ethsec/contracts\" -u 0:0 trailofbits/eth-security-toolbox"
+    
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.9.1",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^4.9.6",
+    "eslint": "^9.9.1",
+    "hardhat": "^2.22.10",
+    "hardhat-contract-signatures": "^1.1.2",
+    "hardhat-contract-sizer": "^2.10.0",
+    "hardhat-dependency-compiler": "^1.2.1",
+    "hardhat-tx-decoder": "^1.0.3",
+    "prettier": "^3.3.3",
+    "prettier-plugin-solidity": "^1.4.1",
+    "solhint": "^5.0.3",
+    "solhint-plugin-prettier": "^0.1.0",
+    "solidity-coverage": "^0.8.13",
+    "tsconfig-paths": "^4.2.0",
+    "typescript-eslint": "^8.1.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.6",
+    "@openzeppelin/contracts-upgradeable": "^4.9.6",
+    "dotenv": "^16.4.5"
+  }
+}
