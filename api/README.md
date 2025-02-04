@@ -144,21 +144,6 @@ Follow these steps to create a new project based on this boilerplate:
 
 ---
 
-## Eventeum Configuration
-
-Eventeum settings are defined in the `application.yml` file under the `ethereum` and `eventStore` sections:
-
-- **Node Configuration:**
-  ```yaml
-  ethereum:
-    nodes:
-      - name: default
-        url: ${EVENTEUM_ETH_NODE_PROTOCOL:http}://${EVENTEUM_ETH_NODE_HOST:localhost}:${EVENTEUM_ETH_NODE_PORT:8545}
-        blockStrategy: ${EVENTEUM_ETH_BLOCK_STRATEGY:POLL}
-        syncingThreshold: ${EVENTEUM_ETH_SYNCING_THRESHOLD:100}
-        healthcheckInterval: ${EVENTEUM_ETH_HEALTH_CHECK_INTERVAL:3000}
-  ```
-
 - **Event Broadcasting:**
   ```yaml
   broadcaster:

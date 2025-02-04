@@ -124,7 +124,7 @@ queryBus:
 surikata:
   event:
     mappers:
-      -   LsmExecuted: io.builders.demo.api.domain.lsmbatch.event.LsmExecutedDltEvent
+      -   LsmExecuted: io.builders.demo.dtcc.domain.lsmbatch.event.LsmExecutedDltEvent
 #    transaction:
 #        mappers:
 #            -   TokenTransferOrdered: io.builders.demo.event.TokenTransferFailedDltEvent

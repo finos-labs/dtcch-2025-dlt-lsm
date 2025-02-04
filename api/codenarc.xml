@@ -58,6 +58,7 @@
         <rule-config name='MisorderedStaticImports'>
             <property name='comesBefore' value='false'/>
         </rule-config>
+        <exclude name="NoWildcardImports" />
     </ruleset-ref>
 
     <!-- Logging -->
