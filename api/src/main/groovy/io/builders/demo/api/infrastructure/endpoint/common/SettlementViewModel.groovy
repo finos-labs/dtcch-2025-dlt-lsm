@@ -1,10 +1,9 @@
 package io.builders.demo.api.infrastructure.endpoint.common
 
+import java.time.OffsetDateTime
+
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import jakarta.validation.constraints.NotNull
-
-import java.time.OffsetDateTime
 
 @EqualsAndHashCode
 @ToString
