@@ -1,0 +1,34 @@
+package io.builders.demo.dtcc.application.dlt.command.executelsm
+
+import io.builders.demo.dtcc.application.dlt.FormatDecimals
+import io.builders.demo.dtcc.domain.lsmbatch.event.ExecuteLsmOrderedEvent
+import io.builders.demo.blockchain.ContractLoader
+import io.builders.demo.core.command.CommandHandler
+import io.builders.demo.core.event.EventBus
+import jakarta.validation.Valid
+import org.iobuilders.dtcc.contracts.DvpOrchestrator
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+import org.web3j.protocol.core.methods.response.TransactionReceipt
+
+@Component
+class OrderExecuteLsmCommandHandler implements CommandHandler<ExecuteLsmOrderedEvent, OrderExecuteLsmCommand> {
+
+    @Autowired
+    ContractLoader contractLoader
+
+    @Autowired
+    EventBus eventBus
+
+    @Override
+    ExecuteLsmOrderedEvent handle(@Valid OrderExecuteLsmCommand command) {
+        DvpOrchestrator contract = contractLoader.load(DvpOrchestrator)
+        TransactionReceipt txReceipt = contract.send_executeLsm(command.transactions.collect { it ->
+            new DvpOrchestrator.Transaction(it.from, it.to, FormatDecimals.toBigInteger(it.amount), it.token)
+        }).send()
+        eventBus.publish(new ExecuteLsmOrderedEvent(
+            transactionId: txReceipt?.transactionHash,
+            contractAddress: contract.contractAddress
+        ))
+    }
+}

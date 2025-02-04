@@ -4,8 +4,6 @@ import io.builders.demo.core.event.DltEvent
 
 class LsmExecutedDltEvent extends DltEvent {
 
-    String transactionHash
-    String contractAddress
-    LsmTransaction[] transactions
+    List<LsmTransaction> transactions
 
 }
