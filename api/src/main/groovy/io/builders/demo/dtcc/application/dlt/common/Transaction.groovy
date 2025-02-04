@@ -2,9 +2,9 @@ package io.builders.demo.dtcc.application.dlt.common
 
 class Transaction {
 
-    String from
-    String to
+    String fromAddress
+    String toAddress
     BigDecimal amount
-    String token
+    String tokenAddress
 
 }

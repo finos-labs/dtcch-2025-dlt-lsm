@@ -21,7 +21,7 @@ class OrderExecuteLsmCommandHandlerSpec extends BaseSpecification {
         when:
         commandBus.executeAndWait(new OrderExecuteLsmCommand(
             transactions: [
-                new Transaction(from: walletA, to: walletB, amount: BigDecimal.ONE, token: dtccConfigurationProperties.cashToken)
+                new Transaction(fromAddress: walletA, toAddress: walletB, amount: BigDecimal.ONE, tokenAddress: dtccConfigurationProperties.cashToken)
             ]
         ))
         then:
