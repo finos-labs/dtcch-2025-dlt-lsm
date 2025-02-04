@@ -1,0 +1,27 @@
+spotless {
+    groovy {
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(4)
+        targetExclude('**/package-info.groovy', '**/*Spec.groovy')
+        importOrder('', 'java', 'javax', 'groovy')
+        endWithNewline()
+    }
+
+    format 'misc', {
+        target '*.gradle', '*.md', '.gitignore', '*.yml', '*.properties', '*.json'
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(2)
+        endWithNewline()
+    }
+
+    groovyGradle {
+        greclipse()
+        leadingTabsToSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
+tasks.named('build') {
+    dependsOn 'spotlessApply'
+}

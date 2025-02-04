@@ -1,0 +1,92 @@
+plugins {
+    id 'groovy'
+    id 'codenarc'
+    id 'maven-publish'
+    id 'com.diffplug.spotless' version "$spotlessVersion"
+    id 'org.barfuin.gradle.jacocolog' version "$jacocologVersion"
+    id 'org.liquibase.gradle' version "$liquibaseVersion"
+    id 'org.springframework.boot' version "$springBootVersion"
+    id 'io.spring.dependency-management' version "$springDependencyManagerVersion"
+}
+
+apply from: 'scripts/jacoco.gradle'
+apply from: 'scripts/liquibase.gradle'
+apply from: 'scripts/spotless.gradle'
+apply from: 'scripts/codenarc.gradle'
+
+group = 'io.builders'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+
+    maven {
+        name = 'GitHub Eventeum Package Registry'
+        url = uri('https://maven.pkg.github.com/iobuilders/eventeum')
+        credentials {
+            username = findProperty('github.user') ?: System.getenv('GITHUB_ACTOR')
+            password = findProperty('github.token') ?: System.getenv('GITHUB_TOKEN')
+        }
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    // Core dependencies
+    implementation "io.eventeum:eventeum-core:$eventeumVersion"
+    implementation "org.reflections:reflections:$reflectionsVersion"
+    implementation 'org.apache.groovy:groovy'
+
+    // Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Database
+    implementation 'org.liquibase:liquibase-core'
+
+    // Development tools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // Test dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation "org.spockframework:spock-spring:$spockVersion"
+    testImplementation "org.spockframework:spock-core:$spockVersion"
+    testImplementation "org.testcontainers:spock:$spockTestContainers"
+    testImplementation 'org.testcontainers:postgresql'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = 'full'
+    }
+}
+
+// Apply @CompileStatic globally to all Groovy classes
+tasks.withType(GroovyCompile).configureEach {
+    groovyOptions.forkOptions.jvmArgs << '-Dgroovy.compiler.annotationProcessors=groovy.transform.CompileStatic'
+    options.compilerArgs << '-parameters'
+}

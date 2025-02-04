@@ -1,0 +1,78 @@
+dependencies {
+    liquibaseRuntime group: 'org.liquibase.ext', name: 'liquibase-hibernate6', version: '4.29.2'
+    liquibaseRuntime group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.3.4.RELEASE'
+
+    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:4.0.0'
+    liquibaseRuntime 'org.codehaus.groovy:groovy-sql:3.0.22'
+    liquibaseRuntime 'info.picocli:picocli:4.7.5'
+    liquibaseRuntime 'org.hibernate:hibernate-core:6.1.0.Final'
+    liquibaseRuntime 'org.hibernate:hibernate-envers:6.1.0.Final'
+    liquibaseRuntime 'org.yaml:snakeyaml:1.15'
+
+    liquibaseRuntime sourceSets.main.output
+    liquibaseRuntime sourceSets.main.runtimeClasspath
+}
+
+liquibase {
+    activities {
+        surikata {
+            changelogFile 'out/changelog_temp_surikata.yml'
+            logLevel 'debug'
+
+            url 'jdbc:postgresql://localhost:5432/surikata'
+            username 'surikata'
+            password 'surikata'
+            driver 'org.postgresql.Driver'
+
+            referenceUrl 'hibernate:spring:io.builders.demo.surikata?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy'
+            referenceDriver 'liquibase.ext.hibernate.database.connection.HibernateDriver'
+
+        }
+
+        blockchain {
+            changelogFile 'out/changelog_temp_blockchain.yml'
+            logLevel 'debug'
+
+            url 'jdbc:postgresql://localhost:5432/blockchainuk'
+            username 'blockchain'
+            password 'blockchain'
+            driver 'org.postgresql.Driver'
+
+            referenceUrl 'hibernate:spring:io.builders.demo.blockchain?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy'
+            referenceDriver 'liquibase.ext.hibernate.database.connection.HibernateDriver'
+
+        }
+
+        eventeum {
+            changelogFile 'out/changelog_temp_eventeum.yml'
+            logLevel 'debug'
+
+            url 'jdbc:postgresql://localhost:5432/eventeumuk'
+            username 'eventeum'
+            password 'eventeum'
+            driver 'org.postgresql.Driver'
+
+            referenceUrl 'hibernate:spring:net.consensys.eventeum?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy'
+            referenceDriver 'liquibase.ext.hibernate.database.connection.HibernateDriver'
+
+        }
+
+        dtcc {
+            changelogFile 'out/changelog_temp_dtcc.yml'
+            logLevel 'debug'
+
+            url 'jdbc:postgresql://localhost:5432/dtcc'
+            username 'dtcc'
+            password 'dtcc'
+            driver 'org.postgresql.Driver'
+
+            referenceUrl 'hibernate:spring:io.builders.demo.dtcc?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy'
+            referenceDriver 'liquibase.ext.hibernate.database.connection.HibernateDriver'
+
+        }
+
+    }
+
+    runList = 'surikata,blockchain,eventeum, dtcc'
+    jvmArgs = ['-Dorg.jboss.logging.provider=slf4j']
+}

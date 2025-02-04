@@ -1,0 +1,344 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1725536154178-1
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_contract_event_details
+                  name: filter_id
+                  type: VARCHAR(255)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: node_name
+                  type: VARCHAR(255)
+              - column:
+                  name: transaction_hash
+                  type: VARCHAR(255)
+              - column:
+                  name: log_index
+                  type: DECIMAL
+              - column:
+                  name: block_number
+                  type: DECIMAL
+              - column:
+                  name: block_hash
+                  type: VARCHAR(255)
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+              - column:
+                  name: from
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: SMALLINT
+              - column:
+                  name: event_specification_signature
+                  type: VARCHAR(255)
+              - column:
+                  name: network_name
+                  type: VARCHAR(255)
+              - column:
+                  name: timestamp
+                  type: DECIMAL
+              - column:
+                  name: block_timestamp
+                  type: DECIMAL
+              - column:
+                  name: extension_data
+                  type: VARCHAR(255)
+            tableName: contract_event_details
+  - changeSet:
+      id: 1725536154178-2
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: contract_event_details_filter_id
+                  type: VARCHAR(255)
+              - column:
+                  name: indexed_parameters
+                  type: bytea
+            tableName: contract_event_details_indexed_parameters
+  - changeSet:
+      id: 1725536154178-3
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: contract_event_details_filter_id
+                  type: VARCHAR(255)
+              - column:
+                  name: non_indexed_parameters
+                  type: bytea
+            tableName: contract_event_details_non_indexed_parameters
+  - changeSet:
+      id: 1725536154178-4
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_contract_event_filter
+                  name: id
+                  type: VARCHAR(255)
+              - column:
+                  name: contract_address
+                  type: VARCHAR(255)
+              - column:
+                  name: node
+                  type: VARCHAR(255)
+              - column:
+                  name: start_block
+                  type: DECIMAL
+              - column:
+                  name: extension
+                  type: VARCHAR(255)
+              - column:
+                  name: event_name
+                  type: VARCHAR(255)
+              - column:
+                  name: event_signature
+                  type: VARCHAR(255)
+              - column:
+                  name: web3event_smart_contract_class
+                  type: VARCHAR(255)
+              - column:
+                  name: correlation_id_strategy_parameter_id
+                  type: INTEGER
+              - column:
+                  name: correlation_id_strategy_type
+                  type: VARCHAR(255)
+            tableName: contract_event_filter
+  - changeSet:
+      id: 1725536154178-5
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: contract_event_filter_id
+                  type: VARCHAR(255)
+              - column:
+                  name: position
+                  type: INT
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+            tableName: contract_event_filter_indexed_parameter_definitions
+  - changeSet:
+      id: 1725536154178-6
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: contract_event_filter_id
+                  type: VARCHAR(255)
+              - column:
+                  name: position
+                  type: INT
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+            tableName: contract_event_filter_non_indexed_parameter_definitions
+  - changeSet:
+      id: 1725536154178-7
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_event_filter_sync_status
+                  name: filter_id
+                  type: VARCHAR(255)
+              - column:
+                  name: last_block_number
+                  type: DECIMAL
+              - column:
+                  name: sync_status
+                  type: VARCHAR(255)
+            tableName: event_filter_sync_status
+  - changeSet:
+      id: 1725536154178-8
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_latest_block
+                  name: node_name
+                  type: VARCHAR(255)
+              - column:
+                  name: number
+                  type: DECIMAL
+              - column:
+                  name: hash
+                  type: VARCHAR(255)
+              - column:
+                  name: timestamp
+                  type: DECIMAL
+            tableName: latest_block
+  - changeSet:
+      id: 1725536154178-9
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_message_details
+                  name: id
+                  type: VARCHAR(255)
+              - column:
+                  name: node_name
+                  type: VARCHAR(255)
+              - column:
+                  name: topic_id
+                  type: VARCHAR(255)
+              - column:
+                  name: message
+                  type: VARCHAR(255)
+              - column:
+                  name: timestamp
+                  type: BIGINT
+              - column:
+                  name: sequence_number
+                  type: BIGINT
+              - column:
+                  name: running_hash
+                  type: bytea
+            tableName: message_details
+  - changeSet:
+      id: 1725536154178-10
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_transaction_monitoring_spec
+                  name: id
+                  type: VARCHAR(255)
+              - column:
+                  name: type
+                  type: SMALLINT
+              - column:
+                  name: node_name
+                  type: VARCHAR(255)
+              - column:
+                  name: transaction_identifier_value
+                  type: VARCHAR(255)
+              - column:
+                  name: extension
+                  type: VARCHAR(255)
+            tableName: transaction_monitoring_spec
+  - changeSet:
+      id: 1725536154178-11
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: transaction_monitoring_spec_id
+                  type: VARCHAR(255)
+              - column:
+                  name: statuses
+                  type: SMALLINT
+            tableName: transaction_monitoring_spec_statuses
+  - changeSet:
+      id: 1725536154178-12
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: contract_event_details_filter_id
+            baseTableName: contract_event_details_indexed_parameters
+            constraintName: fk_contract_event_details_indexed_parameter_on_contract_event_details
+            referencedColumnNames: filter_id
+            referencedTableName: contract_event_details
+  - changeSet:
+      id: 1725536154178-13
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: contract_event_details_filter_id
+            baseTableName: contract_event_details_non_indexed_parameters
+            constraintName: fk_contract_event_details_non_indexed_parameters_on_contract_event_details
+            referencedColumnNames: filter_id
+            referencedTableName: contract_event_details
+  - changeSet:
+      id: 1725536154178-14
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: contract_event_filter_id
+            baseTableName: contract_event_filter_indexed_parameter_definitions
+            constraintName: fk_contract_event_filter_indexed_parameter_definitions_on_contract_event_filter
+            referencedColumnNames: id
+            referencedTableName: contract_event_filter
+  - changeSet:
+      id: 1725536154178-15
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: contract_event_filter_id
+            baseTableName: contract_event_filter_non_indexed_parameter_definitions
+            constraintName: fk_contract_event_filter_non_indexed_parameter_on_contract_event_filter
+            referencedColumnNames: id
+            referencedTableName: contract_event_filter
+  - changeSet:
+      id: 1725536154178-16
+      author: Roman
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: transaction_monitoring_spec_id
+            baseTableName: transaction_monitoring_spec_statuses
+            constraintName: fk_transaction_monitoring_spec_status_on_transaction_monitoring_spec
+            referencedColumnNames: id
+            referencedTableName: transaction_monitoring_spec
+

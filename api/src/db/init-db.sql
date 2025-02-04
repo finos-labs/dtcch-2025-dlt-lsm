@@ -1,0 +1,6 @@
+
+CREATE DATABASE surikata;
+CREATE DATABASE blockchain;
+CREATE DATABASE eventeum;
+CREATE DATABASE dtcc;
+

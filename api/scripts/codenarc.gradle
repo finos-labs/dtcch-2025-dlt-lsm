@@ -1,0 +1,34 @@
+def reportName = null
+
+tasks.register('codenarcConsoleReport') {
+    doLast {
+        def textReportFile
+        if (reportName && (textReportFile = file('${codenarc.reportsDir}/${reportName}.txt')).exists()) {
+            println textReportFile.text
+        }
+    }
+}
+
+codenarcMain {
+    doFirst {
+        reportName = 'main'
+    }
+    finalizedBy codenarcConsoleReport
+    configFile = rootProject.file('codenarc.xml')
+    reports {
+        text.required = true
+        html.required = true
+    }
+}
+
+codenarcTest {
+    doFirst {
+        reportName = 'test'
+    }
+    finalizedBy codenarcConsoleReport
+    configFile = rootProject.file('codenarc-test.xml')
+    reports {
+        text.required = true
+        html.required = true
+    }
+}
