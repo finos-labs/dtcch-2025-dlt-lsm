@@ -48,7 +48,6 @@ def preprocess_data(balances, settlements):
         i = client_to_idx[client]
         client_cash[i] = data["cashAmount"]
         client_token[i] = data["tokenAmount"]
-    n_settlements = len(settlements)
     settlement_cash = np.array([s["cashAmount"] for s in settlements])
     settlement_token = np.array([s["tokenAmount"] for s in settlements])
     settlement_buyer = np.array([client_to_idx[s["buyer"]] for s in settlements])
@@ -57,27 +56,98 @@ def preprocess_data(balances, settlements):
 
 
 # ----------------------------
+# Helper: Check feasibility of an individual
+# ----------------------------
+def is_feasible(individual, client_cash, client_token, settlement_cash, settlement_token,
+                settlement_buyer, settlement_seller):
+    selected = np.array(individual, dtype=bool)
+    net_cash = np.zeros_like(client_cash)
+    net_token = np.zeros_like(client_token)
+    np.add.at(net_cash, settlement_buyer[selected], -settlement_cash[selected])
+    np.add.at(net_cash, settlement_seller[selected], settlement_cash[selected])
+    np.add.at(net_token, settlement_buyer[selected], settlement_token[selected])
+    np.add.at(net_token, settlement_seller[selected], -settlement_token[selected])
+    final_cash = client_cash + net_cash
+    final_token = client_token + net_token
+    return (final_cash >= 0).all() and (final_token >= 0).all()
+
+
+# ----------------------------
+# Repair operator: iteratively remove settlements causing negative balances.
+# ----------------------------
+def repair_individual(individual, client_cash, client_token, settlement_cash, settlement_token,
+                      settlement_buyer, settlement_seller):
+    candidate = individual[:]  # Make a copy
+    # Loop until the candidate is feasible or no further repair is possible.
+    while True:
+        selected = np.array(candidate, dtype=bool)
+        net_cash = np.zeros_like(client_cash)
+        net_token = np.zeros_like(client_token)
+        np.add.at(net_cash, settlement_buyer[selected], -settlement_cash[selected])
+        np.add.at(net_cash, settlement_seller[selected], settlement_cash[selected])
+        np.add.at(net_token, settlement_buyer[selected], settlement_token[selected])
+        np.add.at(net_token, settlement_seller[selected], -settlement_token[selected])
+        final_cash = client_cash + net_cash
+        final_token = client_token + net_token
+
+        # Check feasibility: if all clients have non-negative balances, we're done.
+        if (final_cash >= 0).all() and (final_token >= 0).all():
+            break
+
+        # Identify the client with the greatest violation.
+        violation_cash = np.maximum(0, -final_cash)
+        violation_token = np.maximum(0, -final_token)
+        total_violation = violation_cash + violation_token
+        client_idx = np.argmax(total_violation)
+
+        # Find candidate settlements involving this client.
+        candidate_indices = []
+        if final_cash[client_idx] < 0:
+            candidate_indices.extend(np.where(settlement_buyer == client_idx)[0])
+        if final_token[client_idx] < 0:
+            candidate_indices.extend(np.where(settlement_seller == client_idx)[0])
+        candidate_indices = list(set(candidate_indices))
+        # Choose the settlement that contributes most to the violation.
+        worst = None
+        worst_effect = 0
+        for i in candidate_indices:
+            if candidate[i] == 1:
+                effect = 0
+                if settlement_buyer[i] == client_idx:
+                    effect += settlement_cash[i]
+                if settlement_seller[i] == client_idx:
+                    effect += settlement_token[i]
+                if effect > worst_effect:
+                    worst_effect = effect
+                    worst = i
+        if worst is None:
+            break
+        candidate[worst] = 0  # Remove the worst offending settlement.
+    return candidate
+
+
+# ----------------------------
 # Global evaluation function (vectorized) with continuous penalty
 # ----------------------------
 def evaluate_individual_vectorized(individual, client_cash, client_token, settlement_cash, settlement_token,
                                    settlement_buyer, settlement_seller, W_count=1e6, W_cash=1.0):
     # Compute net changes (effects) on each client due to the selected settlements.
-    selected = np.array(individual, dtype=bool)
+    selected = np.asarray(individual, dtype=bool)
     net_cash = np.zeros_like(client_cash)
     net_token = np.zeros_like(client_token)
+
     # Buyers lose cash and gain tokens; sellers do the opposite.
     np.add.at(net_cash, settlement_buyer[selected], -settlement_cash[selected])
     np.add.at(net_cash, settlement_seller[selected], settlement_cash[selected])
     np.add.at(net_token, settlement_buyer[selected], settlement_token[selected])
     np.add.at(net_token, settlement_seller[selected], -settlement_token[selected])
+
     # Final balances after applying the selected settlements:
     final_cash = client_cash + net_cash
     final_token = client_token + net_token
 
     # Compute total infeasibility (if any balance is negative)
-    penalty_cash = np.sum(np.maximum(0, -final_cash))
-    penalty_token = np.sum(np.maximum(0, -final_token))
-    penalty = penalty_cash + penalty_token
+    penalty = np.sum(np.maximum(0, -final_cash) + np.maximum(0, -final_token))
 
     # Compute the “raw” benefit (e.g., number of transactions and total cash moved)
     n_selected = selected.sum()
@@ -116,17 +186,17 @@ def local_refinement_vectorized(individual, settlements, client_cash, client_tok
                 final_cash = client_cash + net_cash
                 final_token = client_token + net_token
                 if (final_cash < 0).any() or (final_token < 0).any():
-                    continue  # Candidate violates feasibility: skip it.
+                    continue
                 current = candidate
                 improved = True
-                break  # Restart the search after an improvement.
+                break
     return current
 
 
 # ----------------------------
-# GA using DEAP with binary representation (optimized and vectorized)
+# GA using DEAP with binary representation (with selective repair)
 # ----------------------------
-def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate=0.7):
+def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate=0.7, repair_rate=0.5):
     # Preprocess data into NumPy arrays.
     client_cash, client_token, settlement_cash, settlement_token, settlement_buyer, settlement_seller, clients = preprocess_data(
         balances, settlements)
@@ -156,7 +226,7 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
     toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
     toolbox.register("select", tools.selTournament, tournsize=3)
 
-    pool = multiprocessing.Pool()
+    pool = multiprocessing.Pool(processes=4)
     toolbox.register("map", pool.map)
 
     pop = toolbox.population(n=pop_size)
@@ -184,6 +254,17 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
             if random.random() < mut_rate:
                 toolbox.mutate(mutant)
                 del mutant.fitness.values
+
+        # Apply repair only if the individual is not feasible and with probability repair_rate.
+        for ind in offspring:
+            if not is_feasible(ind, client_cash, client_token, settlement_cash, settlement_token,
+                               settlement_buyer, settlement_seller):
+                if random.random() < repair_rate:
+                    repaired = repair_individual(ind, client_cash, client_token,
+                                                 settlement_cash, settlement_token,
+                                                 settlement_buyer, settlement_seller)
+                    ind[:] = repaired
+
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
         fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
         for ind, fit in zip(invalid_ind, fitnesses):
@@ -216,16 +297,18 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
 # Optuna objective function for hyperparameter optimization
 # ----------------------------
 def objective(trial):
-    pop_size = trial.suggest_int("pop_size", 50, 200)
-    ngen = trial.suggest_int("ngen", 50, 150)
-    mut_rate = trial.suggest_float("mut_rate", 0.05, 0.4)
-    cx_rate = trial.suggest_float("cx_rate", 0.5, 0.9)
+    pop_size = trial.suggest_int("pop_size", 80, 150)
+    ngen = trial.suggest_int("ngen", 60, 100)
+    mut_rate = trial.suggest_float("mut_rate", 0.2, 0.3)
+    cx_rate = trial.suggest_float("cx_rate", 0.7, 0.8)
+    repair_rate = trial.suggest_float("repair_rate", 0.4, 0.6)
     global settlements, balances  # Use global variables loaded in main()
     best, ga_settlements, local_refine_fn = run_ga(settlements, balances,
                                                    ngen=ngen,
                                                    pop_size=pop_size,
                                                    mut_rate=mut_rate,
-                                                   cx_rate=cx_rate)
+                                                   cx_rate=cx_rate,
+                                                   repair_rate=repair_rate, )
     selected = [s for bit, s in zip(best, ga_settlements) if bit == 1]
     num_transactions = len(selected)
     total_cash = sum(s["cashAmount"] for s in selected)
@@ -243,7 +326,7 @@ def main():
     print(f"Loaded {len(settlements)} settlements and {len(balances)} clients.")
 
     study = optuna.create_study(direction="maximize")
-    study.optimize(objective, n_trials=10)
+    study.optimize(objective, n_trials=5, n_jobs=1)
     print("Best hyperparameters:", study.best_params)
     print("Best score:", study.best_value)
     best_params = study.best_params
