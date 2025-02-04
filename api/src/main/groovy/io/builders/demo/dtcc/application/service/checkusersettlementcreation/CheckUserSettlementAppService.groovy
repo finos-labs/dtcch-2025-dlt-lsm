@@ -24,7 +24,7 @@ class CheckUserSettlementAppService {
             try {
                 User buyer = checkUserExistsDomainService.execute(it.buyerId)
                 User seller = checkUserExistsDomainService.execute(it.sellerId)
-                this.commandBus.execute(new CreateSettlementCommand(
+                this.commandBus.executeAndWait(new CreateSettlementCommand(
                     buyer: buyer,
                     seller: seller,
                     cashAmount: it.cashAmount,
