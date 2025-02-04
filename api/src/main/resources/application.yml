@@ -72,7 +72,7 @@ hashgraph:
       numBlocksToWaitBeforeInvalidating: 0
       maxUnsyncedBlocksForFilter: 50
       syncingThreshold: 100
-      initialStartBlock: 15314535
+      initialStartBlock: 15324871
 
 broadcaster:
   enableBlockNotifications: false
@@ -112,13 +112,13 @@ transactionFilters:
 blockchain:
   url: https://testnet.hashio.io/api
   chain-id: ${BLOCKCHAIN_CHAIN_ID:296}
-  gas-limit: ${BLOCKCHAIN_GAS_LIMIT:281474976710654}
-  gas-price: ${BLOCKCHAIN_GAS_PRICE:0}
-  gas-multiplier: ${BLOCKCHAIN_GAS_MULTIPLIER:1.5}
-  #  contracts:
-  #    matchSettlement:
-  #      address: "${CONTRACT_ADDRESS:0x6fbDFdF047F33b65D09Ba9Eaa8937947e6207302}"
-  #      contract-class: io.builders.demo.Contract
+  gas-limit: ${BLOCKCHAIN_GAS_LIMIT:15000000}
+  gas-price: ${BLOCKCHAIN_GAS_PRICE:330000000000}
+  gas-multiplier: ${BLOCKCHAIN_GAS_MULTIPLIER:1.0}
+  contracts:
+    matchSettlement:
+      address: "${CONTRACT_ADDRESS:0x6fbDFdF047F33b65D09Ba9Eaa8937947e6207302}"
+      contract-class: org.iobuilders.dtcc.contracts.DvpOrchestrator
   default-provider: database
 
 commandBus:
@@ -154,3 +154,5 @@ logging:
 dtcc:
   defaultAddress: ${DTCC_DEFAULT_ADDRESS}
   privateKey: ${DTCC_ACCOUNT_PRIVATE_KEY}
+  cashToken: ${DTCC_CASH_TOKEN:0x3a434FDE9B50eC67bB0732E17dFadABb8B4075AC}
+  securityToken: ${DTCC_SECURITY_TOKEN:0x1b48f379EFB83c64e5F84D8D5E8A4680334ec809}

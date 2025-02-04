@@ -9,5 +9,7 @@ class DtccConfigurationProperties {
 
     String defaultAddress
     String privateKey
+    String cashToken
+    String securityToken
 
 }
