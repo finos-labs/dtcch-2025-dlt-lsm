@@ -86,7 +86,7 @@ const AIInfo = ({ code }: { code: string }) => {
         AI Output
       </Text>
       <Box bg="blackAlpha.100" height="100%" borderRadius="md" p="2rem">
-        <Code className="light">{code}</Code>
+        <Code className="">{code}</Code>
       </Box>
     </Flex>
   );
@@ -119,7 +119,7 @@ const CollapsibleBatch = ({ data, defaultOpen }: CollapsibleBatchProps) => {
           {data.id && (
             <>
               <Separator orientation="vertical" />
-              <AIInfo code={data.aiResult} />
+              <AIInfo code={data.aiResult ?? "Loading..."} />
             </>
           )}
         </Flex>
@@ -133,23 +133,34 @@ const Settlements = () => {
   const [pendingSettlements, setPendingSettlements] = useState<Batch>();
 
   useEffect(() => {
-    getBatches().then((data) => {
+    const fetchBatches = async () => {
+      const data = await getBatches();
       setBatches(data);
-      console.log(data);
-    });
+      console.log("Batches updated:", data);
+    };
+
+    fetchBatches(); // Initial fetch
+    const interval = setInterval(fetchBatches, 2000);
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
   }, []);
 
   useEffect(() => {
-    getLooseSettlements().then((data) => {
+    const fetchLooseSettlements = async () => {
+      const data = await getLooseSettlements();
       setPendingSettlements(data);
-      console.log(data);
-    });
+      console.log("Pending settlements updated:", data);
+    };
+
+    fetchLooseSettlements(); // Initial fetch
+    const interval = setInterval(fetchLooseSettlements, 2000);
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
   }, []);
 
   return (
     <>
       <Text textStyle="2xl" marginBottom="1rem">
-        {" "}
         Settlements
       </Text>
       <Flex gap={5} direction="column">
@@ -157,16 +168,14 @@ const Settlements = () => {
           <CollapsibleBatch data={pendingSettlements!} defaultOpen />
         )}
         {batches.length > 0 && (
-          <For each={batches.sort((a, b) => b.id - a.id)}>
-            {(batch, index) => {
-              return (
-                <CollapsibleBatch
-                  key={batch.id}
-                  data={batch}
-                  defaultOpen={index === 0}
-                />
-              );
-            }}
+          <For each={batches.sort((a, b) => (b?.id ?? 0) - (a?.id ?? 0))}>
+            {(batch, index) => (
+              <CollapsibleBatch
+                key={batch.id}
+                data={batch}
+                defaultOpen={index === 0}
+              />
+            )}
           </For>
         )}
       </Flex>

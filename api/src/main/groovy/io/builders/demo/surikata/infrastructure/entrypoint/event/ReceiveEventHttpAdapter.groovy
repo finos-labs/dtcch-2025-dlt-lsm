@@ -18,7 +18,7 @@ class ReceiveEventHttpAdapter implements ReceiveEventPort {
     @PostMapping('/api/v1/surikata/contract-events')
     ResponseEntity<Void> receiveEvent(@RequestBody ContractEventDetails event) {
         appService.execute(event)
-        ResponseEntity.accepted().build()
+        ResponseEntity.ok().build()
     }
 
 }

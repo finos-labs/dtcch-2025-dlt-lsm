@@ -17,7 +17,7 @@ export type SettlementRequest = {
 };
 
 export type Batch = {
-  id: number;
-  aiResult: string;
+  id: number | undefined;
   settlements: Settlement[];
+  aiResult?: string;
 };
