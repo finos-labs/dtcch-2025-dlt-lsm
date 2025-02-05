@@ -86,7 +86,7 @@ const AIInfo = ({ code }: { code: string }) => {
         AI Output
       </Text>
       <Box bg="blackAlpha.100" height="100%" borderRadius="md" p="2rem">
-        <Code>{code}</Code>
+        <Code className="light">{code}</Code>
       </Box>
     </Flex>
   );
@@ -153,11 +153,11 @@ const Settlements = () => {
         Settlements
       </Text>
       <Flex gap={5} direction="column">
-        {pendingSettlements && (
-          <CollapsibleBatch data={pendingSettlements} defaultOpen />
+        {(pendingSettlements?.settlements.length ?? 0) > 0 && (
+          <CollapsibleBatch data={pendingSettlements!} defaultOpen />
         )}
         {batches.length > 0 && (
-          <For each={batches}>
+          <For each={batches.sort((a, b) => b.id - a.id)}>
             {(batch, index) => {
               return (
                 <CollapsibleBatch
