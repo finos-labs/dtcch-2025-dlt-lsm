@@ -1,7 +1,8 @@
 ia:
   url: https://generativelanguage.googleapis.com/v1beta/tunedModels
   #  model: settlement-combinations-v01-kvqvb3romxts
-  model: settlement-combinations-v05-cn36fu929vg5
+#  model: settlement-combinations-v05-cn36fu929vg5
+  model: settlement-combinations-v02-cy7ao9x4l9eu
   apiKey: ${AI_API_KEY:AIzaSyD1dOhQsutSABieLIfwzzey3C0U6MoxnPw}
 
 spring:
@@ -113,7 +114,7 @@ blockchain:
   url: https://testnet.hashio.io/api
   chain-id: ${BLOCKCHAIN_CHAIN_ID:296}
   gas-limit: ${BLOCKCHAIN_GAS_LIMIT:15000000}
-  gas-price: ${BLOCKCHAIN_GAS_PRICE:330000000000}
+  gas-price: ${BLOCKCHAIN_GAS_PRICE:350000000000}
   gas-multiplier: ${BLOCKCHAIN_GAS_MULTIPLIER:1.0}
   contracts:
     matchSettlement:
