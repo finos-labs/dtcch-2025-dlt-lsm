@@ -52,27 +52,27 @@ class CalculateLsmNetAppService {
                 )
             }
             //TODO: Add FT for async AI call
-            GetAiCombinationQueryModel selectedSettlements = queryBus.executeAndWait(new GetLsmNetResultQuery(
-                settlements: settlements.collect { settlement ->
-                    new IASettlement(
-                        tokenAmount: settlement.securityAmount,
-                        cashAmount: settlement.cashAmount,
-                        buyer: settlement.buyer.id,
-                        seller: settlement.seller.id,
-                        id: settlement.id
-                    )
-                },
-                balances: balances
-            ))
-            if (!selectedSettlements.settlements.empty) {
-                commandBus.executeAndWait(
-                    new PersistLsmNetCommand(
-                        settlementIds: selectedSettlements.settlements*.id,
-                        batchId: model.batchId,
-                        aiOutput: selectedSettlements.aiResult
-                    )
-                )
-            }
+//            GetAiCombinationQueryModel selectedSettlements = queryBus.executeAndWait(new GetLsmNetResultQuery(
+//                settlements: settlements.collect { settlement ->
+//                    new IASettlement(
+//                        tokenAmount: settlement.securityAmount,
+//                        cashAmount: settlement.cashAmount,
+//                        buyer: settlement.buyer.id,
+//                        seller: settlement.seller.id,
+//                        id: settlement.id
+//                    )
+//                },
+//                balances: balances
+//            ))
+//            if (!selectedSettlements.settlements.empty) {
+//                commandBus.executeAndWait(
+//                    new PersistLsmNetCommand(
+//                        settlementIds: selectedSettlements.settlements*.id,
+//                        batchId: model.batchId,
+//                        aiOutput: selectedSettlements.aiResult
+//                    )
+//                )
+//            }
         }
     }
 
