@@ -23,16 +23,22 @@ class OrderExecuteLsmCommandHandler implements CommandHandler<ExecuteLsmOrderedE
     @Override
     ExecuteLsmOrderedEvent handle(@Valid OrderExecuteLsmCommand command) {
         DvpOrchestrator contract = contractLoader.load(DvpOrchestrator)
-        TransactionReceipt txReceipt = contract.send_executeLsm(command.transactions.collect { it ->
-            new DvpOrchestrator.Transaction(it.fromAddress,
+        List<DvpOrchestrator.Transaction> transactions = command.transactions.collect { it ->
+            new DvpOrchestrator.Transaction(
+                it.fromAddress,
                 it.toAddress,
                 FormatDecimals.toBigInteger(it.amount),
                 it.tokenAddress
             )
-        }).send()
+        }
+        TransactionReceipt txReceipt = contract.send_executeLsm(
+            command.batchId,
+            transactions
+            ).send()
         eventBus.publish(new ExecuteLsmOrderedEvent(
             transactionId: txReceipt?.transactionHash,
-            contractAddress: contract.contractAddress
+            contractAddress: contract.contractAddress,
+            batchId: command.batchId
         ))
     }
 

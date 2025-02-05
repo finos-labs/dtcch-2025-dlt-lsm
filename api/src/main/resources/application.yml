@@ -61,7 +61,7 @@ hashgraph:
       limitPerRequest: 50
       blockStrategy: POLL
       addTransactionRevertReason: true
-      pollingInterval: 1800
+      pollingInterval: 500
       maxIdleConnections: 10
       keepAliveDuration: 15000
       connectionTimeout: 7000

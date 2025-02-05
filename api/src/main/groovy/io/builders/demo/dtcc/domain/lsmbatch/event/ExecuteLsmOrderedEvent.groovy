@@ -4,4 +4,6 @@ import io.builders.demo.core.event.TransactionEvent
 
 class ExecuteLsmOrderedEvent extends TransactionEvent {
 
+    Integer batchId
+
 }
