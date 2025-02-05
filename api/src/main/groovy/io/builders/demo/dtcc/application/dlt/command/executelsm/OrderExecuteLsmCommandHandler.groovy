@@ -27,12 +27,12 @@ class OrderExecuteLsmCommandHandler implements CommandHandler<ExecuteLsmOrderedE
             new DvpOrchestrator.Transaction(
                 it.fromAddress,
                 it.toAddress,
-                FormatDecimals.toBigInteger(it.amount),
+                FormatDecimals.toBigInteger(it.amount).toInteger(),
                 it.tokenAddress
             )
         }
         TransactionReceipt txReceipt = contract.send_executeLsm(
-            command.batchId,
+            command.batchId.toBigInteger(),
             transactions
             ).send()
         eventBus.publish(new ExecuteLsmOrderedEvent(

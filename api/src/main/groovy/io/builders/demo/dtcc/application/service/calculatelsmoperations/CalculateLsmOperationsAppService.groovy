@@ -23,19 +23,7 @@ class CalculateLsmOperationsAppService {
     @Autowired
     DtccConfigurationProperties dtccConfigurationProperties
 
-    void calculate(Integer lsmId) {
-        LsmBatch lsmBatch = checkLsmBatchExistsDomainService.execute(lsmId)
-        Map<String, Map<String, BigDecimal>> netBalances = calculateNetBalances(lsmBatch.settlements)
-
-        List<Transaction> transactions = transformNetToTransactions(netBalances.security, netBalances.cash)
-        if (!transactions.empty) {
-            commandBus.executeAndWait(new OrderExecuteLsmCommand(transactions: transactions))
-            return
-        }
-        commandBus.executeAndWait(new UpdateSettlementsCommand(lsmId))
-    }
-
-    Map<String, Map<String, BigDecimal>> calculateNetBalances(List<Settlement> settlements) {
+    static Map<String, Map<String, BigDecimal>> calculateNetBalances(List<Settlement> settlements) {
         Map<String, BigDecimal> netSecurity = [:].withDefault { BigDecimal.ZERO }
         Map<String, BigDecimal> netCash = [:].withDefault { BigDecimal.ZERO }
 
@@ -48,6 +36,18 @@ class CalculateLsmOperationsAppService {
         }
 
         return [security: netSecurity, cash: netCash]
+    }
+
+    void calculate(Integer lsmId) {
+        LsmBatch lsmBatch = checkLsmBatchExistsDomainService.execute(lsmId)
+        Map<String, Map<String, BigDecimal>> netBalances = calculateNetBalances(lsmBatch.settlements)
+
+        List<Transaction> transactions = transformNetToTransactions(netBalances.security, netBalances.cash)
+        if (!transactions.empty) {
+            commandBus.executeAndWait(new OrderExecuteLsmCommand(batchId: lsmBatch.id, transactions: transactions))
+            return
+        }
+        commandBus.executeAndWait(new UpdateSettlementsCommand(lsmId))
     }
 
     List<Transaction> transformNetToTransactions(

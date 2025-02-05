@@ -41,10 +41,11 @@ class ContractEventServiceMapper {
 
     @Async
     void execute(@Valid ContractEventDetails contractEvent) {
-        Optional<Transaction> transaction = repository.findByHash(transactionHash)
+        Optional<Transaction> transaction = repository.findByHash(contractEvent.transactionHash)
         if (transaction.isPresent()) {
+            Transaction tx = transaction.get()
             commandBus.executeAndWait(new UpdateTransactionStatusCommand(
-                id: transaction.id, status: TransactionStatus.SUCCESS
+                id: tx.id, status: TransactionStatus.SUCCESS
             ))
             DltEvent event = modelMapper.map(
                 contractEvent,
