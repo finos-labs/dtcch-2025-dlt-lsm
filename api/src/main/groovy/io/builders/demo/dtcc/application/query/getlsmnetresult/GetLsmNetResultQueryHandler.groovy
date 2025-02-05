@@ -2,9 +2,7 @@ package io.builders.demo.dtcc.application.query.getlsmnetresult
 
 import groovy.util.logging.Slf4j
 import io.builders.demo.core.query.QueryHandler
-import io.builders.demo.dtcc.application.query.common.GetLsmBatchesQueryModel
-import io.builders.demo.dtcc.domain.lsmbatch.LsmBatch
-import io.builders.demo.dtcc.domain.lsmbatch.LsmBatchRepository
+import io.builders.demo.dtcc.application.query.common.GetAiCombinationQueryModel
 import io.builders.demo.integration.IAPort
 import io.builders.demo.integration.model.Balance
 import io.builders.demo.integration.model.IARequest
@@ -16,7 +14,7 @@ import org.springframework.stereotype.Component
 
 @Component
 @Slf4j
-class GetLsmNetResultQueryHandler implements QueryHandler<List<IASettlement>, GetLsmNetResultQuery> {
+class GetLsmNetResultQueryHandler implements QueryHandler<GetAiCombinationQueryModel, GetLsmNetResultQuery> {
 
     @Autowired
     IAPort iaPort
@@ -25,7 +23,7 @@ class GetLsmNetResultQueryHandler implements QueryHandler<List<IASettlement>, Ge
     ModelMapper modelMapper
 
     @Override
-    List<IASettlement> handle(@Valid GetLsmNetResultQuery query) {
+    GetAiCombinationQueryModel handle(@Valid GetLsmNetResultQuery query) {
         List<String> combinationProposed = []
         List<IASettlement> settlementProposed = []
         Boolean isValid = false
@@ -33,14 +31,16 @@ class GetLsmNetResultQueryHandler implements QueryHandler<List<IASettlement>, Ge
         while (!isValid && tries > 0) {
             log.debug("[Try-${5 - tries}] Trying to obtain a valid combination of settlements")
             combinationProposed = iaPort.obtainIACombination(new IARequest(settlements: query.settlements, balances: query.balances))
-            settlementProposed = query.settlements.findAll { combinationProposed.contains(it.id) }
+            settlementProposed = query.settlements.findAll { combinationProposed.contains(it.id.toString()) }
             isValid = isValidBalancesCombination(settlementProposed, query.balances)
             tries--
         }
         if (!isValid) {
             log.error('Error when trying to obtain a valid combination of settlements')
+        } else {
+            log.error("Valid combination found! ${combinationProposed.join(',')}")
         }
-        return isValid ? settlementProposed : []
+        return new GetAiCombinationQueryModel(settlements: settlementProposed, aiResult: combinationProposed.join(','))
     }
 
     private static Map<String, BigDecimal> calculateFinalBalances(Map<String, BigDecimal> balances, Map<String, BigDecimal> amounts) {

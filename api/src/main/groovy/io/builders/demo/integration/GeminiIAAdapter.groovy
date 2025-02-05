@@ -37,7 +37,7 @@ class GeminiIAAdapter implements IAPort {
         def requestBodyString = "{ \"contents\": [ {\"parts\":[{\"text\":\"Only return the resulting IDs, ${inputEscaped}\"}]}]}"
         log.info("RequestBodyString ${requestBodyString}")
         try {
-            connection.connect()
+            initialize()
             connection.outputStream.withWriter('UTF-8') { it.write(requestBodyString) }
             def responseCode = connection.responseCode
             log.info("Response Code: ${responseCode}")
@@ -60,8 +60,7 @@ class GeminiIAAdapter implements IAPort {
         return responseCombination
     }
 
-    @PostConstruct
-    init() {
+    void initialize() {
         def apiUrl = "${this.url}/${this.model}:generateContent?key=${this.apiKey}"
         connection = (HttpURLConnection) new URL(apiUrl).openConnection()
         connection.requestMethod = 'POST'

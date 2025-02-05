@@ -46,6 +46,7 @@ class PersistLsmNetCommandHandler implements CommandHandler<LsmNetCalculatedEven
         settlementRepository.saveAll(discardedSettlements)
 
         batch.settlements = filteredSettlements
+        batch.aiResult = command.aiOutput
         lsmBatchRepository.save(batch)
 
         eventBus.publish(new LsmNetCalculatedEvent(
