@@ -19,9 +19,8 @@ class CheckLsmBatchExistsDomainService {
     }
 
     LsmBatch executeBySettlementId(Integer settlementId) throws LsmBatchNotFoundDomainException {
-        repository.findBySettlementIdIn(id).orElseThrow {
-            new LsmBatchNotFoundDomainException(id)
+        repository.findBySettlementIdIn(settlementId).orElseThrow {
+            new LsmBatchNotFoundDomainException(settlementId)
         }
     }
-
 }
