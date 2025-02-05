@@ -28,7 +28,7 @@ class StartLsmBatchCommandHandler implements CommandHandler<LsmBatchStartedEvent
     @Override
     LsmBatchStartedEvent handle(@Valid StartLsmBatchCommand command) {
         List<Settlement> settlementPending = settlementRepository.findAllByStatusIs(SettlementStatus.PENDING)
-        if(settlementPending.isEmpty()) {
+        if (settlementPending.empty) {
             throw new SettlementPendingNotFoundDomainException()
         }
         LsmBatch lsmBatch = this.lsmBatchRepository.save(new LsmBatch())
