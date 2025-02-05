@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class CalculateLsmOperationAdapter implements CalculateLsmOperationsPort {
+class UpdateSettlementsAdapter implements UpdateSettlementsPort {
 
     @Autowired
     CommandBus commandBus
