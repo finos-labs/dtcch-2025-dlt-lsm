@@ -14,7 +14,7 @@ class CalculateLsmOperationAdapter implements CalculateLsmOperationsPort {
 
     @Override
     void receive(LsmExecutedDltEvent event) {
-        this.commandBus.executeAndWait(new UpdateSettlementsCommand(batchId: event.batchId))
+        commandBus.executeAndWait(new UpdateSettlementsCommand(batchId: event.batchId))
     }
 
 }

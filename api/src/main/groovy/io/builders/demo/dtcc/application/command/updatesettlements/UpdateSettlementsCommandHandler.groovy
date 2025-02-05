@@ -29,11 +29,11 @@ class UpdateSettlementsCommandHandler implements CommandHandler<SettlementsUpdat
 
     @Override
     SettlementsUpdatedEvent handle(@Valid UpdateSettlementsCommand command) {
-        LsmBatch lsmBatch = this.checkLsmBatchExistsDomainService.execute(command.batchId)
+        LsmBatch lsmBatch = checkLsmBatchExistsDomainService.execute(command.batchId)
         List<Integer> settlementIds = []
         lsmBatch.settlements.forEach {
             it.status = SettlementStatus.COMPLETED
-            this.settlementRepository.save(it)
+            settlementRepository.save(it)
             settlementIds.add(it.id)
         }
 
