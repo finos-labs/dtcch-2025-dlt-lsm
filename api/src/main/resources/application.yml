@@ -1,8 +1,8 @@
 ia:
   url: https://generativelanguage.googleapis.com/v1beta/tunedModels
   #  model: settlement-combinations-v01-kvqvb3romxts
-  model: settlement-combinations-v02-cy7ao9x4l9eu
-  apiKey: ${AI_API_KEY:apikey}
+  model: settlement-combinations-v04-ulk5hwr1emj8
+  apiKey: ${AI_API_KEY:AIzaSyD1dOhQsutSABieLIfwzzey3C0U6MoxnPw}
 
 spring:
   application:
@@ -138,8 +138,8 @@ surikata:
 hedera:
   testnet: ${HEDERA_NODE_TESTNET:true}
   account:
-    id: ${HEDERA_ACCOUNT_ID}
-    privateKey: ${HEDERA_ACCOUNT_PRIVATE_KEY}
+    id: ${HEDERA_ACCOUNT_ID:0.0.5469588}
+    privateKey: ${HEDERA_ACCOUNT_PRIVATE_KEY:0x47186ae57f189ea007c8733ab7545e576979451ff872dccfbe2d9e226ced242d}
 
 logging:
   level:
@@ -152,8 +152,8 @@ logging:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c: %M - %m%n"
 
 dtcc:
-  defaultAddress: ${DTCC_DEFAULT_ADDRESS}
-  privateKey: ${DTCC_ACCOUNT_PRIVATE_KEY}
+  defaultAddress: ${DTCC_DEFAULT_ADDRESS:0x708eeb6f709f5138f0f0344e5b6f6ac11ec4a712}
+  privateKey: ${DTCC_ACCOUNT_PRIVATE_KEY:0x47186ae57f189ea007c8733ab7545e576979451ff872dccfbe2d9e226ced242d}
   cashToken: ${DTCC_CASH_TOKEN:0x9cECEB96469c6f96276b7dAC8BAA59218762C9F0}
   securityToken: ${DTCC_SECURITY_TOKEN:0xe0732A10Fee16FDca3d1B196b86014F7fcb67Ac3}
   omnibusAccount: ${DTCC_OMNIBUS_ACCOUNT:0x4d4ccf261cc1551920ab72479351c7670a839a5a}

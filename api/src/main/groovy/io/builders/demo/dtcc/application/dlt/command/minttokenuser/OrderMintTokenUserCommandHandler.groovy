@@ -23,7 +23,11 @@ class OrderMintTokenUserCommandHandler implements CommandHandler<MintTokenUserOr
     @Override
     MintTokenUserOrderedEvent handle(@Valid OrderMintTokenUserCommand command) {
         DvpOrchestrator contract = contractLoader.load(DvpOrchestrator)
-        TransactionReceipt txReceipt = contract.send_issueTokens(command.tokenAddress, command.userAddress, FormatDecimals.toBigInteger(command.amount)).send()
+        TransactionReceipt txReceipt = contract.send_issueTokens(
+            command.tokenAddress,
+            command.userAddress,
+            FormatDecimals.toBigInteger(command.amount)
+        ).send()
         eventBus.publish(new MintTokenUserOrderedEvent(
             transactionId: txReceipt?.transactionHash,
             contractAddress: contract.contractAddress,
