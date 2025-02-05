@@ -27,7 +27,7 @@ class LsmBatch extends BaseEntity {
     String aiResult
 
     void addSettlement(Settlement settlement) {
-        settlement.lsmBatch(this)
+        settlement.setLsmBatch(this)
         settlements.add(settlement)
     }
 
