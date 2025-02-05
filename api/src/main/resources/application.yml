@@ -72,7 +72,7 @@ hashgraph:
       numBlocksToWaitBeforeInvalidating: 0
       maxUnsyncedBlocksForFilter: 50
       syncingThreshold: 100
-      initialStartBlock: 15324871
+      initialStartBlock: 15369462
 
 broadcaster:
   enableBlockNotifications: false
