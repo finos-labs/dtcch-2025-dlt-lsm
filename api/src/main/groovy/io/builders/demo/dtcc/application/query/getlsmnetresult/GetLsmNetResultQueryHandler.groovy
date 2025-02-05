@@ -31,7 +31,7 @@ class GetLsmNetResultQueryHandler implements QueryHandler<GetAiCombinationQueryM
         while (!isValid && tries > 0) {
             log.debug("[Try-${5 - tries}] Trying to obtain a valid combination of settlements")
             combinationProposed = iaPort.obtainIACombination(new IARequest(settlements: query.settlements, balances: query.balances))
-            settlementProposed = query.settlements.findAll { combinationProposed.contains(it.id.toString()) }
+            settlementProposed = query.settlements.findAll { combinationProposed.contains(it.id.toString()) || combinationProposed.contains(it.id) }
             isValid = isValidBalancesCombination(settlementProposed, query.balances)
             tries--
         }
