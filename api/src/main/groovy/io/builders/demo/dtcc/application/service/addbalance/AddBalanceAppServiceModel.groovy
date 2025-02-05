@@ -13,4 +13,5 @@ class AddBalanceAppServiceModel {
 
     @NotEmpty
     String tokenAddress
+
 }

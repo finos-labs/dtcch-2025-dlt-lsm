@@ -30,6 +30,8 @@ class CreateSettlementCommandHandler implements CommandHandler<SettlementCreated
             executionDate: OffsetDateTime.now()
         ))
 
+        Optional<Settlement> result = settlementRepository.findById(settlement.id)
+
         eventBus.publish(new SettlementCreatedEvent(
             id: settlement.id,
             sellerId: settlement.seller.id,

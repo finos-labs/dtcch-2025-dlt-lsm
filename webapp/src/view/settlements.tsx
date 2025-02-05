@@ -1,4 +1,3 @@
-import IconButton from "@/components/button/io-icon-button";
 import SettlementStatus from "@/components/settlement/settlement-status";
 import { getBatches, getLooseSettlements } from "@/service/api-service";
 import { Batch, Settlement } from "@/types";
@@ -13,8 +12,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { BsEye } from "react-icons/bs";
-import { useNavigate } from "react-router";
 
 type CollapsibleBatchProps = {
   data: Batch;
@@ -26,7 +23,6 @@ type SettlementTableProps = {
 };
 
 const SettlementTable = ({ data }: SettlementTableProps) => {
-  const navigate = useNavigate();
   return (
     <Table.Root key={data.length ?? 0} className="light" native>
       <Table.Header>
@@ -52,28 +48,30 @@ const SettlementTable = ({ data }: SettlementTableProps) => {
           <Table.ColumnHeader>
             <b>Status</b>
           </Table.ColumnHeader>
-          <Table.ColumnHeader textAlign="center">
+          {/* <Table.ColumnHeader textAlign="center">
             <b>Details</b>
-          </Table.ColumnHeader>
+          </Table.ColumnHeader> */}
         </Table.Row>
       </Table.Header>
       <Table.Body>
         {data.map((item: Settlement) => (
-          <Table.Row key={item.settlementId}>
-            <Table.Cell>{item.settlementId}</Table.Cell>
+          <Table.Row key={item.id}>
+            <Table.Cell>{item.id}</Table.Cell>
             <Table.Cell>{item.securityAmount}</Table.Cell>
             <Table.Cell>{item.cashAmount}</Table.Cell>
-            <Table.Cell>{item.buyerAlias}</Table.Cell>
-            <Table.Cell>{item.sellerAlias}</Table.Cell>
-            <Table.Cell>{new Date(item.datetime).toLocaleString()}</Table.Cell>
+            <Table.Cell>{item.buyer}</Table.Cell>
+            <Table.Cell>{item.seller}</Table.Cell>
+            <Table.Cell>
+              {new Date(item.creationDate).toLocaleString()}
+            </Table.Cell>
             <Table.Cell>
               <SettlementStatus status={item.status} />
             </Table.Cell>
-            <Table.Cell textAlign="center">
-              <IconButton onClick={() => navigate(item.settlementId)}>
+            {/* <Table.Cell textAlign="center">
+              <IconButton onClick={() => navigate(item.id)}>
                 <BsEye />
               </IconButton>
-            </Table.Cell>
+            </Table.Cell> */}
           </Table.Row>
         ))}
       </Table.Body>
@@ -112,13 +110,13 @@ const CollapsibleBatch = ({ data, defaultOpen }: CollapsibleBatchProps) => {
         w="100%"
         textAlign="left"
       >
-        {data.batchId ? `Batch # ${data.batchId}` : "Pending Settlements"} (
+        {data.id ? `Batch # ${data.id}` : "Pending Settlements"} (
         {data.settlements.length})
       </Collapsible.Trigger>
       <Collapsible.Content>
         <Flex padding="4" gap={5} direction="row">
           <SettlementTable data={data.settlements} />
-          {data.batchId && (
+          {data.id && (
             <>
               <Separator orientation="vertical" />
               <AIInfo />
@@ -163,7 +161,7 @@ const Settlements = () => {
             {(batch, index) => {
               return (
                 <CollapsibleBatch
-                  key={batch.batchId}
+                  key={batch.id}
                   data={batch}
                   defaultOpen={index === 0}
                 />
