@@ -5,6 +5,7 @@ import io.builders.demo.core.event.DltEvent
 import io.builders.demo.core.event.EventBus
 import io.builders.demo.surikata.application.transaction.command.updatetransactionstatus.UpdateTransactionStatusCommand
 import io.builders.demo.surikata.domain.transaction.Transaction
+import io.builders.demo.surikata.domain.transaction.TransactionRepository
 import io.builders.demo.surikata.domain.transaction.TransactionStatus
 import io.builders.demo.surikata.domain.transaction.service.CheckTransactionExistsDomainService
 import io.builders.demo.surikata.infrastructure.configuration.SurikataEventMapperConfiguration
@@ -35,17 +36,22 @@ class ContractEventServiceMapper {
     @Autowired
     EventBus eventBus
 
+    @Autowired
+    TransactionRepository repository
+
     @Async
     void execute(@Valid ContractEventDetails contractEvent) {
-        Transaction transaction = checkTransactionExistsDomainService.execute(contractEvent.transactionHash)
-        commandBus.executeAndWait(new UpdateTransactionStatusCommand(
-            id: transaction.id, status: TransactionStatus.SUCCESS
-        ))
-        DltEvent event = modelMapper.map(
-            contractEvent,
-            surikataMapperConfiguration.mappers[contractEvent.name] as Class<? extends DltEvent>
-        )
-        eventBus.publish(event)
+        Optional<Transaction> transaction = repository.findByHash(transactionHash)
+        if (transaction.isPresent()) {
+            commandBus.executeAndWait(new UpdateTransactionStatusCommand(
+                id: transaction.id, status: TransactionStatus.SUCCESS
+            ))
+            DltEvent event = modelMapper.map(
+                contractEvent,
+                surikataMapperConfiguration.mappers[contractEvent.name] as Class<? extends DltEvent>
+            )
+            eventBus.publish(event)
+        }
     }
 
 }
