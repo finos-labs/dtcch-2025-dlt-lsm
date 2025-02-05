@@ -78,7 +78,7 @@ broadcaster:
   enableBlockNotifications: false
   type: ${EVENTEUM_BROADCASTER:HTTP}
   cache:
-    expirationMillis: ${EVENTEUM_CACHE_EXPIRATION_IN_MILLIS:6000000}
+    expirationMillis: ${EVENTEUM_CACHE_EXPIRATION_IN_MILLIS:0}
   event:
     confirmation:
       numBlocksToWait: ${EVENTEUM_NUM_BLOCKS_TO_WAIT:0}
