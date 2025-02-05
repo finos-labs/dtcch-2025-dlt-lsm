@@ -5,3 +5,6 @@ optuna
 matplotlib
 requests
 sagemaker-inference
+flask
+boto3
+python-dotenv

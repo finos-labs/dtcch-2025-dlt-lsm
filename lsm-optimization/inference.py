@@ -1,36 +1,55 @@
 import json
+import os
+import tempfile
+
+import boto3
 import requests
+from flask import Flask, request, jsonify
+
 import run_ga
 
+app = Flask(__name__)
 
-def model_fn(model_dir):
-    return {}
-
-
-def input_fn(request_body, request_content_type):
-    if request_content_type == 'application/json':
-        data = json.loads(request_body)
-        return data
-    else:
-        raise ValueError("content_type not supported: " + request_content_type)
+S3_BUCKET = os.environ.get("S3_BUCKET", "ga-lsm-bucket")
+s3_client = boto3.client("s3")
 
 
-def predict_fn(input_data, model):
-    balances = input_data["balances"]
-    settlements = input_data["settlements"]
-    callback_url = input_data.get("callbackUrl")
+@app.route('/ping', methods=['GET'])
+def ping():
+    return jsonify(status="ok")
 
-    results = run_ga.execute_lsm(balances, settlements)
 
-    if callback_url:
+@app.route('/invocations', methods=['POST'])
+def invoke():
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as temp_file:
+            temp_file.write(request.data)
+            temp_filename = temp_file.name
+
+        with open(temp_filename, "r", encoding="utf-8") as f:
+            request_json = json.load(f)
+
+        balances = request_json.get("balances")
+        settlements = request_json.get("settlements")
+        callback_url = request_json.get("callbackUrl")
+
+        if not balances or not settlements or not callback_url:
+            return jsonify(error="Missing required fields in JSON"), 400
+
+        balances, settlements = run_ga.preprocess_json(request_json)
+        results = run_ga.execute_lsm(balances, settlements)
+
         try:
-            r = requests.post(callback_url, json=results, timeout=30)
-            print(f"Callback status code: {r.status_code}")
+            response = requests.post(callback_url, json=results, timeout=30)
+            print(f"Callback sent, status code: {response.status_code}")
         except Exception as e:
-            print(f"Error en callback: {e}")
+            print(f"Error sending callback: {e}")
 
-    return results
+        return jsonify(results=results)
+
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 
-def output_fn(prediction, content_type):
-    return json.dumps(prediction)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)

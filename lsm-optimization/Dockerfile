@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip3 install --no-cache-dir --upgrade pip
 
 COPY requirements.txt /tmp/
-
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt \
     && rm -rf /root/.cache
 
@@ -21,5 +20,7 @@ WORKDIR /opt/ml/code
 
 EXPOSE 8080
 
-CMD ["python3", "/opt/ml/code/inference.py"]
+RUN pip3 install flask gunicorn
+
+ENTRYPOINT ["gunicorn", "--workers=4", "--bind=0.0.0.0:8080", "--timeout=1200", "inference:app"]
 

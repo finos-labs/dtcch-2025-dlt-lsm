@@ -16,11 +16,9 @@ from deap import base, creator, tools
 
 
 # ----------------------------
-# Load JSON data and preprocess
+# Preprocess JSON data
 # ----------------------------
-def load_data(filename):
-    with open(filename, "r") as f:
-        data = json.load(f)
+def preprocess_json(data):
     balances_raw = data["balances"]
     if isinstance(balances_raw, list):
         balances = {b["client"]: {"cashAmount": b["cashAmount"], "tokenAmount": b["tokenAmount"]}
@@ -197,8 +195,8 @@ def local_refinement_vectorized(individual, settlements, client_cash, client_tok
 # ----------------------------
 # GA using DEAP with binary representation (with selective repair)
 # ----------------------------
-def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate=0.7, init_prob=0.5, parallelism=False,
-           use_repair=False, repair_prob=0.5):
+def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate=0.7, init_prob=0.5,
+           parallelism=False, use_repair=False, repair_prob=0.5):
     # Preprocess data into NumPy arrays.
     client_cash, client_token, settlement_cash, settlement_token, settlement_buyer, settlement_seller, clients = preprocess_data(
         balances, settlements)
@@ -233,7 +231,6 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
     toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
     toolbox.register("select", tools.selTournament, tournsize=3)
 
-    pool = None
     if parallelism:
         pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
         toolbox.register("map", pool.map)
@@ -266,7 +263,7 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
                 toolbox.mutate(mutant)
                 del mutant.fitness.values
 
-        # Apply repair only if the individual is not feasible and with probability repair_rate.
+        # Apply repair only if the individual is not feasible and with probability repair_prob.
         for ind in offspring:
             if not is_feasible(ind, client_cash, client_token, settlement_cash, settlement_token,
                                settlement_buyer, settlement_seller):
@@ -303,20 +300,21 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
 # ----------------------------
 # Optuna objective function for hyperparameter optimization
 # ----------------------------
-def objective(trial):
+def objective(trial, balances, settlements):
     pop_size = trial.suggest_int("pop_size", 50, 300)
     ngen = trial.suggest_int("ngen", 50, 150)
     mut_rate = trial.suggest_float("mut_rate", 0.25, 0.35)
     cx_rate = trial.suggest_float("cx_rate", 0.5, 0.9)
     init_prob = trial.suggest_float("init_prob", 0.2, 0.9)
 
-    global settlements, balances  # Use global variables loaded in main()
-    best, ga_settlements, local_refine_fn = run_ga(settlements, balances,
-                                                   ngen=ngen,
-                                                   pop_size=pop_size,
-                                                   mut_rate=mut_rate,
-                                                   cx_rate=cx_rate,
-                                                   init_prob=init_prob)
+    best, ga_settlements, local_refine_fn = run_ga(
+        settlements, balances,
+        ngen=ngen,
+        pop_size=pop_size,
+        mut_rate=mut_rate,
+        cx_rate=cx_rate,
+        init_prob=init_prob
+    )
     selected = [s for bit, s in zip(best, ga_settlements) if bit == 1]
     num_transactions = len(selected)
     total_cash = sum(s["cashAmount"] for s in selected)
@@ -329,8 +327,10 @@ def objective(trial):
 # ----------------------------
 def execute_lsm(balances, settlements):
     start_time = time.time()
+    # Use partial to pass balances and settlements to the objective function.
+    obj = partial(objective, balances=balances, settlements=settlements)
     study = optuna.create_study(direction="maximize", pruner=optuna.pruners.MedianPruner())
-    study.optimize(objective, n_trials=10, n_jobs=multiprocessing.cpu_count())
+    study.optimize(obj, n_trials=10, n_jobs=multiprocessing.cpu_count())
     print("Best hyperparameters:", study.best_params)
     print("Best score:", study.best_value)
     best_params = study.best_params
@@ -341,7 +341,7 @@ def execute_lsm(balances, settlements):
         pop_size=best_params["pop_size"],
         mut_rate=best_params["mut_rate"],
         cx_rate=best_params["cx_rate"],
-        init_prob=best_params.get("init_prob", 0.5, )
+        init_prob=best_params.get("init_prob", 0.5)
     )
 
     selected_ga = [s for bit, s in zip(best, ga_settlements) if bit == 1]
@@ -377,8 +377,10 @@ def execute_lsm(balances, settlements):
 # Main function
 # ----------------------------
 def main():
-    global balances, settlements
-    balances, settlements = load_data("data.json")
+    with open("data.json", "r") as f:
+        data = json.load(f)
+
+    balances, settlements = preprocess_json(data)
     print(f"Loaded {len(settlements)} settlements and {len(balances)} clients.")
 
     output_ids = execute_lsm(balances, settlements)
