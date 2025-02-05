@@ -26,7 +26,7 @@ def generate_data(num_clients=5, num_settlements=10, output_file="data.json"):
             "tokenAmount": random.randint(5, 50)
         })
 
-    data = {"balances": balances, "settlements": settlements}
+    data = {"balances": balances, "settlements": settlements, "callbackUrl": "https://webhook.site/634b19aa-8c15-4a28-9912-7cd42a50137c"}
 
     with open(output_file, "w") as f:
         json.dump(data, f, indent=2)
