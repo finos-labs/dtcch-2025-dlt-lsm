@@ -17,8 +17,8 @@ abstract class ContractEventDetailsConverter<E extends DltEvent>
     }
 
     E includeTime(ContractEventDetails contractEventDetails, E converted) {
-        converted.timeStamp = contractEventDetails.timestamp ?
-            convertToOffsetDateTime(contractEventDetails.timestamp) : null
+//        converted.timeStamp = contractEventDetails.timestamp ?
+//            convertToOffsetDateTime(contractEventDetails.timestamp) : null
         converted.blockTimestamp = contractEventDetails.blockTimestamp ?
             convertToOffsetDateTime(contractEventDetails.blockTimestamp) : null
         converted

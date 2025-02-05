@@ -79,14 +79,14 @@ const SettlementTable = ({ data }: SettlementTableProps) => {
   );
 };
 
-const AIInfo = () => {
+const AIInfo = ({ code }: { code: string }) => {
   return (
     <Flex direction="column" w="50%">
       <Text textStyle="2xl" marginBottom="1rem">
         AI Output
       </Text>
       <Box bg="blackAlpha.100" height="100%" borderRadius="md" p="2rem">
-        <Code>Example code</Code>
+        <Code>{code}</Code>
       </Box>
     </Flex>
   );
@@ -119,7 +119,7 @@ const CollapsibleBatch = ({ data, defaultOpen }: CollapsibleBatchProps) => {
           {data.id && (
             <>
               <Separator orientation="vertical" />
-              <AIInfo />
+              <AIInfo code={data.aiResult} />
             </>
           )}
         </Flex>

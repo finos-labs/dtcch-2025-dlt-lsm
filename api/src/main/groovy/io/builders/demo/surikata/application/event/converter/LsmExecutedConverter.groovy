@@ -5,7 +5,9 @@ import io.builders.demo.dtcc.domain.lsmbatch.event.LsmTransaction
 import net.consensys.eventeum.dto.event.ContractEventDetails
 import net.consensys.eventeum.dto.event.parameter.EventParameter
 import net.consensys.eventeum.dto.event.parameter.NumberParameter
+import org.springframework.stereotype.Component
 
+@Component
 class LsmExecutedConverter extends ContractEventDetailsConverter<LsmExecutedDltEvent> {
 
     @Override
