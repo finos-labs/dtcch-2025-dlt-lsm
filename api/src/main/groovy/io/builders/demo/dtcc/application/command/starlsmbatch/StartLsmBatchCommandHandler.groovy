@@ -5,6 +5,7 @@ import io.builders.demo.core.event.EventBus
 import io.builders.demo.dtcc.domain.lsmbatch.LsmBatch
 import io.builders.demo.dtcc.domain.lsmbatch.LsmBatchRepository
 import io.builders.demo.dtcc.domain.lsmbatch.event.LsmBatchStartedEvent
+import io.builders.demo.dtcc.domain.lsmbatch.exception.SettlementPendingNotFoundDomainException
 import io.builders.demo.dtcc.domain.settlement.Settlement
 import io.builders.demo.dtcc.domain.settlement.SettlementRepository
 import io.builders.demo.dtcc.domain.settlement.SettlementStatus
@@ -26,8 +27,11 @@ class StartLsmBatchCommandHandler implements CommandHandler<LsmBatchStartedEvent
 
     @Override
     LsmBatchStartedEvent handle(@Valid StartLsmBatchCommand command) {
-        LsmBatch lsmBatch = this.lsmBatchRepository.save(new LsmBatch())
         List<Settlement> settlementPending = settlementRepository.findAllByStatusIs(SettlementStatus.PENDING)
+        if(settlementPending.isEmpty()) {
+            throw new SettlementPendingNotFoundDomainException()
+        }
+        LsmBatch lsmBatch = this.lsmBatchRepository.save(new LsmBatch())
         settlementPending.forEach {
             it.setStatus(SettlementStatus.PROCESSING)
             it.setLsmBatch(lsmBatch)
