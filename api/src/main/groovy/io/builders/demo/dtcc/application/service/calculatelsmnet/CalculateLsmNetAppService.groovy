@@ -6,6 +6,7 @@ import io.builders.demo.core.query.QueryBus
 import io.builders.demo.dtcc.application.command.persistlsm.PersistLsmNetCommand
 import io.builders.demo.dtcc.application.dlt.query.getbalance.AccountBalancesQueryModel
 import io.builders.demo.dtcc.application.dlt.query.getbalance.GetBalanceQuery
+import io.builders.demo.dtcc.application.query.common.GetAiCombinationQueryModel
 import io.builders.demo.dtcc.application.query.getlsmnetresult.GetLsmNetResultQuery
 import io.builders.demo.dtcc.domain.lsmbatch.service.CheckLsmBatchExistsDomainService
 import io.builders.demo.dtcc.domain.settlement.Settlement
@@ -51,7 +52,7 @@ class CalculateLsmNetAppService {
                         tokenAmount: balance.securityToken
                 )
             }
-            List<IASettlement> selectedSettlements = queryBus.executeAndWait(new GetLsmNetResultQuery(
+            GetAiCombinationQueryModel selectedSettlements = queryBus.executeAndWait(new GetLsmNetResultQuery(
                     settlements: settlements.collect { settlement ->
                         new IASettlement(
                                 tokenAmount: settlement.securityAmount,
@@ -63,8 +64,8 @@ class CalculateLsmNetAppService {
                     },
                     balances: balances
             ))
-            if (!selectedSettlements.empty) {
-                commandBus.executeAndWait(new PersistLsmNetCommand(settlementIds: selectedSettlements*.id, batchId: model.batchId), aiOutput: )
+            if (!selectedSettlements.settlements.empty) {
+                commandBus.executeAndWait(new PersistLsmNetCommand(settlementIds: selectedSettlements.settlements*.id, batchId: model.batchId), aiOutput: selectedSettlements.aiResult)
             }
         }
     }
