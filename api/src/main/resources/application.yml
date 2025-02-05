@@ -91,12 +91,12 @@ broadcaster:
 #    messageEventsUrl: ${HTTP_PROTOCOL_MESSAGE_EVENTS_URL:http}://${HTTP_PROTOCOL_MESSAGE_EVENTS_HOST:localhost}:${HTTP_PROTOCOL_MESSAGE_EVENTS_PORT:8080}/api/v1/message-events
 
 eventFilters:
-  - id: DvpOrchestratorLsmExecuted.${CONTRACT_ADDRESS:0x6fbDFdF047F33b65D09Ba9Eaa8937947e6207302}
+  - id: DvpOrchestratorLsmExecuted.${CONTRACT_ADDRESS:0x1239E437441f7E2daAC8ecf315f802D589546B04}
     node: ${ETH_NODE:hedera}
-    contractAddress: ${CONTRACT_ADDRESS:0x6fbDFdF047F33b65D09Ba9Eaa8937947e6207302}
+    contractAddress: ${CONTRACT_ADDRESS:0x1239E437441f7E2daAC8ecf315f802D589546B04}
     eventSpecification:
       eventName: LsmExecuted
-      eventSignature: ((address,address,uint256,address)[])
+      eventSignature: (uint256,(address,address,uint256,address)[])
       web3EventSmartContractClass: org.iobuilders.dtcc.contracts.DvpOrchestrator
     correlationId:
       type: NON_INDEXED_PARAMETER
@@ -105,7 +105,7 @@ eventFilters:
 transactionFilters:
   - nodeName: ${ETH_NODE:hedera}
     type: "TO_ADDRESS"
-    transactionIdentifierValue: ${CONTRACT_ADDRESS:0x6fbDFdF047F33b65D09Ba9Eaa8937947e6207302}
+    transactionIdentifierValue: ${CONTRACT_ADDRESS:0x1239E437441f7E2daAC8ecf315f802D589546B04}
     statuses: ['FAILED']
 
 # Core
@@ -117,7 +117,7 @@ blockchain:
   gas-multiplier: ${BLOCKCHAIN_GAS_MULTIPLIER:1.0}
   contracts:
     matchSettlement:
-      address: "${CONTRACT_ADDRESS:0x6fbDFdF047F33b65D09Ba9Eaa8937947e6207302}"
+      address: "${CONTRACT_ADDRESS:0x1239E437441f7E2daAC8ecf315f802D589546B04}"
       contract-class: org.iobuilders.dtcc.contracts.DvpOrchestrator
   default-provider: database
 
@@ -154,6 +154,6 @@ logging:
 dtcc:
   defaultAddress: ${DTCC_DEFAULT_ADDRESS}
   privateKey: ${DTCC_ACCOUNT_PRIVATE_KEY}
-  cashToken: ${DTCC_CASH_TOKEN:0x3a434FDE9B50eC67bB0732E17dFadABb8B4075AC}
-  securityToken: ${DTCC_SECURITY_TOKEN:0x1b48f379EFB83c64e5F84D8D5E8A4680334ec809}
+  cashToken: ${DTCC_CASH_TOKEN:0x9cECEB96469c6f96276b7dAC8BAA59218762C9F0}
+  securityToken: ${DTCC_SECURITY_TOKEN:0xe0732A10Fee16FDca3d1B196b86014F7fcb67Ac3}
   omnibusAccount: ${DTCC_OMNIBUS_ACCOUNT:0x4d4ccf261cc1551920ab72479351c7670a839a5a}
