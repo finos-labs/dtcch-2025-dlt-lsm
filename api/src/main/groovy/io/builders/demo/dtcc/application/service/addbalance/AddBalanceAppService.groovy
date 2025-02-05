@@ -27,4 +27,5 @@ class AddBalanceAppService {
             tokenAddress: model.tokenAddress
         ))
     }
+
 }

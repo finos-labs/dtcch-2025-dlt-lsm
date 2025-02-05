@@ -18,11 +18,12 @@ class ResetBalanceAppService {
     @Autowired
     UserRepository userRepository
 
-    void execute(ResetBalanceAppServiceModel appServiceModel){
+    void execute(ResetBalanceAppServiceModel appServiceModel) {
         List<User> users = userRepository.findAll()
-        List<String> addresses = users.collect(it->
+        List<String> addresses = users.collect(it ->
             it.dltAddress
         )
-        commandBus.execute(new OrderResetBalanceCommand(addresses:addresses,amount:appServiceModel.amount))
+        commandBus.executeAndWait(new OrderResetBalanceCommand(addresses: addresses, amount: appServiceModel.amount))
     }
+
 }
