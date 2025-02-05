@@ -26,9 +26,14 @@ export const getSettlementDetails = async (id: string) => {
 export const createRandomSettlements = async (amount: number) => {
   const elements: { settlements: SettlementRequest[] } = { settlements: [] };
   for (let i = 0; i < amount; i++) {
+    const buyerId = Math.floor(Math.random() * 5) + 1;
+    let sellerId = Math.floor(Math.random() * 5) + 1;
+    while (buyerId === sellerId) {
+      sellerId = Math.floor(Math.random() * 5) + 1;
+    }
     elements.settlements.push({
-      securityAmount: Math.floor(Math.random() * 15),
-      cashAmount: Math.floor(Math.random() * 15),
+      securityAmount: Math.floor(Math.random() * 15) + 1,
+      cashAmount: Math.floor(Math.random() * 15) + 1,
       buyerId: Math.floor(Math.random() * 5) + 1,
       sellerId: Math.floor(Math.random() * 5) + 1,
     });
