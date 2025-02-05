@@ -64,7 +64,7 @@ class CalculateLsmNetAppService {
                     balances: balances
             ))
             if (!selectedSettlements.empty) {
-                commandBus.executeAndWait(new PersistLsmNetCommand(settlementIds: selectedSettlements*.id, batchId: model.batchId))
+                commandBus.executeAndWait(new PersistLsmNetCommand(settlementIds: selectedSettlements*.id, batchId: model.batchId), aiOutput: )
             }
         }
     }

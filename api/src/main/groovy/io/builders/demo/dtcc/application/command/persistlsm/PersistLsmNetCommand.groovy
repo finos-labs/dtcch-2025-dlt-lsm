@@ -13,4 +13,7 @@ class PersistLsmNetCommand extends Command<LsmNetCalculatedEvent> {
     @NotNull
     Integer batchId
 
+    @NotNull
+    String aiOutput
+
 }

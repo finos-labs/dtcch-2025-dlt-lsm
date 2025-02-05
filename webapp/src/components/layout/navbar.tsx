@@ -4,9 +4,11 @@ import { useState } from "react";
 import image from "../../assets/Simbolo_ioB.png";
 import Button from "../button/io-button";
 import { NumberInputField } from "../ui/number-input";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const [amount, setAmount] = useState("50");
+  const [amount, setAmount] = useState("5");
+  const navigate = useNavigate();
 
   return (
     <Flex
@@ -32,19 +34,31 @@ const Navbar = () => {
       <Flex gap={4} alignItems="center">
         |<Text>Amount:</Text>
         <NumberInputRoot
-          defaultValue="50"
           maxW="50px"
           value={amount}
-          onValueChange={(e) => setAmount(e.value)}
+          onValueChange={(e) => {
+            setAmount(e.value);
+          }}
         >
           <NumberInputField />
         </NumberInputRoot>
         <Button
-          onClick={() => createRandomSettlements(Number.parseInt(amount))}
+          onClick={() => {
+            createRandomSettlements(Number.parseInt(amount));
+            navigate(0);
+          }}
         >
           Create Random Settlements
         </Button>
-        |<Button onClick={() => executeLsm()}>Exectue LSM</Button>
+        |
+        <Button
+          onClick={() => {
+            executeLsm();
+            navigate(0);
+          }}
+        >
+          Exectue LSM
+        </Button>
       </Flex>
     </Flex>
   );
