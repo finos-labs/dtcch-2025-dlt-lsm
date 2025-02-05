@@ -10,10 +10,11 @@ class LsmExecutedConverter extends ContractEventDetailsConverter<LsmExecutedDltE
 
     @Override
     LsmExecutedDltEvent convert(ContractEventDetails contractEventDetails) {
-        List<EventParameter> transactions = (List<EventParameter>) contractEventDetails.nonIndexedParameters[0].value
+        List<EventParameter> transactions = (List<EventParameter>) contractEventDetails.nonIndexedParameters[1].value
         LsmExecutedDltEvent event = new LsmExecutedDltEvent(
             transactionHash: contractEventDetails.transactionHash,
             contractAddress: contractEventDetails.address,
+            batchId: (contractEventDetails.nonIndexedParameters[0] as NumberParameter).value,
             transactions: transactions.collect { tx ->
                 List<EventParameter> values = (List<EventParameter>) tx.value
                 new LsmTransaction(

@@ -30,9 +30,10 @@ interface IDvpOrchestrator {
         uint256 amount;
         address token;
     }
-    event LsmExecuted(Transaction[] lsmTransactions);
+    event LsmExecuted(uint256 batchId, Transaction[] lsmTransactions);
 
     function executeLsm(
+        uint256 _batchId,
         Transaction[] calldata _lsmTransactions
     ) external returns (bool);
 
