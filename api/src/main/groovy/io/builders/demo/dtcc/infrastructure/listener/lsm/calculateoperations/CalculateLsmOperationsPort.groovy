@@ -5,4 +5,6 @@ import io.builders.demo.dtcc.domain.lsmbatch.event.LsmNetCalculatedEvent
 
 interface CalculateLsmOperationsPort extends EventListener<LsmNetCalculatedEvent> {
 
+    void receive(LsmNetCalculatedEvent event)
+
 }
