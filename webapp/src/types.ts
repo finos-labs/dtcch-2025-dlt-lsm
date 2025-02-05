@@ -1,5 +1,5 @@
 export type Settlement = {
-  id: string;
+  id: number;
   securityAmount: number;
   cashAmount: number;
   buyer: string;
@@ -17,7 +17,7 @@ export type SettlementRequest = {
 };
 
 export type Batch = {
-  id: string;
+  id: number;
   aiResult: string;
   settlements: Settlement[];
 };
