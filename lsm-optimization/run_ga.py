@@ -325,14 +325,10 @@ def objective(trial):
 
 
 # ----------------------------
-# Main function
+# LSM execution
 # ----------------------------
-def main():
+def execute_lsm(balances, settlements):
     start_time = time.time()
-    global balances, settlements
-    balances, settlements = load_data("data.json")
-    print(f"Loaded {len(settlements)} settlements and {len(balances)} clients.")
-
     study = optuna.create_study(direction="maximize", pruner=optuna.pruners.MedianPruner())
     study.optimize(objective, n_trials=10, n_jobs=multiprocessing.cpu_count())
     print("Best hyperparameters:", study.best_params)
@@ -373,12 +369,23 @@ def main():
     print(f"Total token: {total_token_refined}")
     print(f"Fitness-like score: {score_refined:.2f}")
 
-    output_ids = [s["id"] for s in selected_refined]
+    print(f"Processing time: {time.time() - start_time:.2f} seconds")
+    return [s["id"] for s in selected_refined]
+
+
+# ----------------------------
+# Main function
+# ----------------------------
+def main():
+    global balances, settlements
+    balances, settlements = load_data("data.json")
+    print(f"Loaded {len(settlements)} settlements and {len(balances)} clients.")
+
+    output_ids = execute_lsm(balances, settlements)
+
     with open("output.json", "w") as f:
         json.dump({"output": output_ids}, f, indent=2)
     print("\nOutput written to 'output.json'")
-
-    print(f"Processing time: {time.time() - start_time:.2f} seconds")
 
 
 if __name__ == '__main__':
