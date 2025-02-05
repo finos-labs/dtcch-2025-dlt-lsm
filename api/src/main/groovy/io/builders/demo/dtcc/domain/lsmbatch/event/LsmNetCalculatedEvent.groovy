@@ -4,6 +4,6 @@ import io.builders.demo.core.event.Event
 
 class LsmNetCalculatedEvent implements Event  {
 
-    UUID lsmId
+    Integer lsmId
 
 }

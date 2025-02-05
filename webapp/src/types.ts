@@ -1,15 +1,22 @@
 export type Settlement = {
-  settlementId: string;
+  id: string;
   securityAmount: number;
   cashAmount: number;
-  buyerAlias: string;
-  sellerAlias: string;
-  datetime: string;
+  buyer: string;
+  seller: string;
+  creationDate: string;
   status: string;
   batchId?: string;
 };
 
+export type SettlementRequest = {
+  securityAmount: number;
+  cashAmount: number;
+  buyerId: number;
+  sellerId: number;
+};
+
 export type Batch = {
-  batchId: string;
+  id: string;
   settlements: Settlement[];
 };

@@ -4,12 +4,12 @@ import java.time.OffsetDateTime
 
 class SettlementQueryModel {
 
-    Integer id
     String buyerAlias
     String sellerAlias
     String status
     BigDecimal securityAmount
     BigDecimal cashAmount
     OffsetDateTime creationDate
+    Integer id
 
 }

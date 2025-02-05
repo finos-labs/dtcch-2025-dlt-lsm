@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository
 interface SettlementRepository extends JpaRepository<Settlement, Integer> {
 
     List<Settlement> findAllByStatusIs(SettlementStatus status)
+    List<Settlement> findAllByLsmBatchId(Integer batchId)
 
 }

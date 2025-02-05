@@ -20,7 +20,7 @@ class LsmBatch extends BaseEntity {
     @Column
     OffsetDateTime executionDate
 
-    @OneToMany(mappedBy = 'lsmBatch', orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = 'lsmBatch', orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<Settlement> settlements = []
 
     @Column

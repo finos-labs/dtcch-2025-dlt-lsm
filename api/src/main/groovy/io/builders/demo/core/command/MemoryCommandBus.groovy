@@ -40,9 +40,6 @@ class MemoryCommandBus implements CommandBus {
     @Autowired
     private ApplicationContext applicationContext
 
-    @Autowired
-    private ThreadPoolTaskExecutor taskExecutor
-
     private final Map<String, Class<CommandHandler>> commandHandlers = [:]
 
     @PostConstruct
@@ -91,15 +88,13 @@ class MemoryCommandBus implements CommandBus {
     <R extends Event, C extends Command<R>> CompletableFuture<R> execute(C command, String prefix = commandPrefix) {
         CompletableFuture<R> future = new CompletableFuture<>()
 
-        taskExecutor.execute {
-            try {
-                Class<CommandHandler> commandHandlerClass = this.commandHandlers.get(command.class.name)
-                CommandHandler commandHandler = applicationContext.getBean(commandHandlerClass)
-                R result = commandHandler.handle(command) as R
-                future.complete(result)
-            } catch (Throwable ex) {
-                future.completeExceptionally(ex)
-            }
+        try {
+            Class<CommandHandler> commandHandlerClass = this.commandHandlers.get(command.class.name)
+            CommandHandler commandHandler = applicationContext.getBean(commandHandlerClass)
+            R result = commandHandler.handle(command) as R
+            future.complete(result)
+        } catch (Throwable ex) {
+            future.completeExceptionally(ex)
         }
 
         return future

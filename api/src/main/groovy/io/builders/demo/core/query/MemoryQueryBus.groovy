@@ -39,9 +39,6 @@ class MemoryQueryBus implements QueryBus {
     @Autowired
     private ApplicationContext applicationContext
 
-    @Autowired
-    private ThreadPoolTaskExecutor taskExecutor
-
     private final Map<String, Class<QueryHandler>> queryHandlers = [:]
 
     @PostConstruct
@@ -86,15 +83,13 @@ class MemoryQueryBus implements QueryBus {
     <R, Q extends Query<R>> CompletableFuture<R> execute(Q query, String prefix = queryPrefix) {
         CompletableFuture<R> future = new CompletableFuture<>()
 
-        taskExecutor.execute {
-            try {
-                Class<QueryHandler> queryHandlerClass = this.queryHandlers.get(query.class.name)
-                QueryHandler queryHandler = applicationContext.getBean(queryHandlerClass)
-                R result = queryHandler.handle(query) as R
-                future.complete(result)
-            } catch (Throwable ex) {
-                future.completeExceptionally(ex)
-            }
+        try {
+            Class<QueryHandler> queryHandlerClass = this.queryHandlers.get(query.class.name)
+            QueryHandler queryHandler = applicationContext.getBean(queryHandlerClass)
+            R result = queryHandler.handle(query) as R
+            future.complete(result)
+        } catch (Throwable ex) {
+            future.completeExceptionally(ex)
         }
 
         return future

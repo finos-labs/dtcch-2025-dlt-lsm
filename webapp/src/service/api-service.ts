@@ -1,4 +1,4 @@
-import { Batch, Settlement } from "@/types";
+import { Batch, SettlementRequest } from "@/types";
 import axios from "axios";
 
 const BASE_URL =
@@ -15,7 +15,7 @@ export const getLooseSettlements = async (): Promise<Batch> => {
     .data;
   return {
     settlements: data,
-    batchId: "",
+    id: "",
   };
 };
 
@@ -24,13 +24,13 @@ export const getSettlementDetails = async (id: string) => {
 };
 
 export const createRandomSettlements = async (amount: number) => {
-  const elements: Partial<Settlement>[] = [];
+  const elements: { settlements: SettlementRequest[] } = { settlements: [] };
   for (let i = 0; i < amount; i++) {
-    elements.push({
+    elements.settlements.push({
       securityAmount: Math.floor(Math.random() * 15),
       cashAmount: Math.floor(Math.random() * 15),
-      buyerAlias: "buyer" + Math.floor(Math.random() * 5),
-      sellerAlias: "seller" + Math.floor(Math.random() * 5),
+      buyerId: Math.floor(Math.random() * 5) + 1,
+      sellerId: Math.floor(Math.random() * 5) + 1,
     });
   }
   console.log("Settlements:", elements);
@@ -38,5 +38,5 @@ export const createRandomSettlements = async (amount: number) => {
 };
 
 export const executeLsm = async () => {
-  return (await axios.post(getUrl("/settlements/process").toString())).data;
+  return (await axios.post(getUrl("/batches").toString())).data;
 };

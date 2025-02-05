@@ -26,13 +26,39 @@ class GetLsmNetResultQueryHandler implements QueryHandler<List<IASettlement>, Ge
 
     @Override
     List<IASettlement> handle(@Valid GetLsmNetResultQuery query) {
-        List<String> combinationProposed = iaPort.obtainIACombination( new IARequest(settlements: query.settlements, balances: query.balances))
-        List<IASettlement> settlementProposed = query.settlements.findAll {combinationProposed.contains(it.id) }
-        Boolean isValid = isValidBalancesCombination(settlementProposed, query.balances)
+        List<String> combinationProposed = []
+        List<IASettlement> settlementProposed = []
+        Boolean isValid = false
+        Integer tries = 5
+        while (!isValid && tries > 0) {
+            log.debug("[Try-${5 - tries}] Trying to obtain a valid combination of settlements")
+            combinationProposed = iaPort.obtainIACombination(new IARequest(settlements: query.settlements, balances: query.balances))
+            settlementProposed = query.settlements.findAll { combinationProposed.contains(it.id) }
+            isValid = isValidBalancesCombination(settlementProposed, query.balances)
+            tries--
+        }
+        if (!isValid) {
+            log.error('Error when trying to obtain a valid combination of settlements')
+        }
         return isValid ? settlementProposed : []
     }
 
-    private Boolean isValidBalancesCombination(List<IASettlement> attemptToValidate, Map<String, Balance> balancesMap) {
+    private static Map<String, BigDecimal> calculateFinalBalances(Map<String, BigDecimal> balances, Map<String, BigDecimal> amounts) {
+        def totalSet = (balances + amounts).collectEntries { key, value ->
+            if (balances.containsKey(key) && amounts.containsKey(key)) {
+                [(key): balances[key] + amounts[key]]
+            } else {
+                [(key): value]
+            }
+        }
+        return totalSet
+    }
+
+    private static Map<String, BigDecimal> filterNegative(Map<String, BigDecimal> finalCashBalances) {
+        return finalCashBalances.findAll { key, value -> value < 0 }
+    }
+
+    private static Boolean isValidBalancesCombination(List<IASettlement> attemptToValidate, Map<String, Balance> balancesMap) {
         balancesMap = balancesMap.sort { it.key }
         Set<String> clients = [attemptToValidate*.buyer, attemptToValidate*.seller].flatten() as Set<String>
         clients = clients.sort { it }
@@ -43,14 +69,14 @@ class GetLsmNetResultQueryHandler implements QueryHandler<List<IASettlement>, Ge
             requiredTokenAttempt[client] = attemptToValidate.sum { it.tokenAmountByClient(client) }
         }
 
-        requiredCashAttempt= requiredCashAttempt.sort { it.key }
-        requiredTokenAttempt= requiredTokenAttempt.sort { it.key }
+        requiredCashAttempt = requiredCashAttempt.sort { it.key }
+        requiredTokenAttempt = requiredTokenAttempt.sort { it.key }
         def availableCashBalances = balancesMap.collectEntries { key, value -> [(key): value.cashAmount] }
         def availableTokenBalances = balancesMap.collectEntries { key, value -> [(key): value.tokenAmount] }
         def finalCashBalances = calculateFinalBalances(availableCashBalances, requiredCashAttempt)
         def finalTokenBalances = calculateFinalBalances(availableTokenBalances, requiredTokenAttempt)
 
-        if(filterNegative(finalCashBalances).isEmpty() && filterNegative(finalTokenBalances).isEmpty()){
+        if (filterNegative(finalCashBalances).isEmpty() && filterNegative(finalTokenBalances).isEmpty()) {
             log.debug("Available Cash and Token Balances for ALL clients")
             log.debug("RequiredCash ${requiredCashAttempt}")
             log.debug("AvailableCashBalances ${availableCashBalances}")
@@ -60,17 +86,15 @@ class GetLsmNetResultQueryHandler implements QueryHandler<List<IASettlement>, Ge
             log.debug("FinalTokenBalances ${finalTokenBalances}")
 
             return Boolean.TRUE
-        }
-        else {
+        } else {
             log.debug("clients ${clients}")
-            if(!filterNegative(finalCashBalances).isEmpty()) {
+            if (!filterNegative(finalCashBalances).isEmpty()) {
                 log.debug("Not available CashBalances for ${filterNegative(finalCashBalances)}")
                 log.debug("RequiredCash ${requiredCashAttempt}")
                 log.debug("AvailableCashBalances ${availableCashBalances}")
                 log.debug("FinalCashBalances ${finalCashBalances}")
             }
-            if(!filterNegative(finalTokenBalances).isEmpty()) {
-
+            if (!filterNegative(finalTokenBalances).isEmpty()) {
                 log.debug("Not available TokenBalances for ${filterNegative(finalTokenBalances)}")
                 log.debug("RequiredToken ${requiredTokenAttempt}")
                 log.debug("AvailableTokenBalances ${availableTokenBalances}")
