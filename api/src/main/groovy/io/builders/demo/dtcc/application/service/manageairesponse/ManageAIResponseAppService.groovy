@@ -9,6 +9,7 @@ import io.builders.demo.dtcc.application.dlt.query.getbalance.GetBalanceQuery
 import io.builders.demo.dtcc.domain.lsmbatch.LsmBatch
 import io.builders.demo.dtcc.domain.lsmbatch.service.CheckLsmBatchExistsDomainService
 import io.builders.demo.dtcc.domain.settlement.Settlement
+import io.builders.demo.dtcc.domain.settlement.SettlementRepository
 import io.builders.demo.dtcc.domain.user.UserRepository
 import io.builders.demo.dtcc.domain.utils.NetUtils
 import io.builders.demo.integration.model.Balance
@@ -34,12 +35,18 @@ class ManageAIResponseAppService {
     CheckLsmBatchExistsDomainService checkLsmBatchExistsDomainService
 
     @Autowired
+    SettlementRepository settlementRepository
+
+    @Autowired
     UserRepository userRepository
 
     void execute(@Valid List<String> combinationProposed) {
         if(!combinationProposed.empty) {
             LsmBatch batch = checkLsmBatchExistsDomainService.executeBySettlementId(Integer.valueOf(combinationProposed.first()))
             List<Settlement> settlements = checkLsmBatchExistsDomainService.execute(batch.id).settlements
+            List<Settlement> proposedSettlements = settlementRepository.findAllById(combinationProposed.collect {
+                Integer.valueOf(it)
+            })
             if (!settlements.empty) {
                 List<String> addresses = settlements.collect { [it.buyer.dltAddress, it.seller.dltAddress] }
                     .flatten().toSet().toList()
@@ -57,7 +64,7 @@ class ManageAIResponseAppService {
 
                 if(
                     NetUtils.isValidBalancesCombination(
-                        settlements.collect { settlement ->
+                        proposedSettlements.collect { settlement ->
                             new IASettlement(
                                 tokenAmount: settlement.securityAmount,
                                 cashAmount: settlement.cashAmount,
@@ -69,15 +76,13 @@ class ManageAIResponseAppService {
                         balances: balances
                     )
                 ) {
-                    if (!selectedSettlements.settlements.empty) {
-                        commandBus.executeAndWait(
-                            new PersistLsmNetCommand(
-                                settlementIds: selectedSettlements.settlements*.id,
-                                batchId: batch.id,
-                                aiOutput: selectedSettlements.aiResult
-                            )
+                    commandBus.executeAndWait(
+                        new PersistLsmNetCommand(
+                            settlementIds: proposedSettlements*.id,
+                            batchId: batch.id,
+                            aiOutput: "AIOUTPUT"
                         )
-                    }
+                    )
                     counter = 0
                 }
                 else {
