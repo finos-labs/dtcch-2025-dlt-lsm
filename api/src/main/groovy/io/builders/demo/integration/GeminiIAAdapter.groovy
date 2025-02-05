@@ -34,9 +34,10 @@ class GeminiIAAdapter implements IAPort {
         ObjectMapper objectMapper = new ObjectMapper()
         String jsonString = objectMapper.writeValueAsString(request)
         def inputEscaped = jsonString.replaceAll('"', '\\\\"')
-        def requestBodyString = "{ \"contents\": [ {\"parts\":[{\"text\":\"${inputEscaped}\"}]}]}"
+        def requestBodyString = "{ \"contents\": [ {\"parts\":[{\"text\":\"Only return the resulting IDs, ${inputEscaped}\"}]}]}"
         log.info("RequestBodyString ${requestBodyString}")
         try {
+            connection.connect()
             connection.outputStream.withWriter('UTF-8') { it.write(requestBodyString) }
             def responseCode = connection.responseCode
             log.info("Response Code: ${responseCode}")
@@ -46,10 +47,14 @@ class GeminiIAAdapter implements IAPort {
             def jsonSlurper = new JsonSlurper()
             def responseJson = jsonSlurper.parseText(responseText)
             log.info("Response like Json: ${responseJson}")
-            responseCombination = jsonSlurper.parseText(responseJson.candidates[0].content.parts[0].text)
+            def res = responseJson.candidates[0]?.content?.parts[0]?.text?.replaceAll('```', '')?.replaceAll('json', '')
+            responseCombination = jsonSlurper.parseText(res)
         }
         catch (Exception e) {
             log.error("Exception when call to IA: ${e.cause} ${e.message}")
+            throw e
+        } finally {
+            connection.disconnect()
         }
         log.info("Response Combination: ${responseCombination}")
         return responseCombination
