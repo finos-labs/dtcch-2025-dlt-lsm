@@ -15,7 +15,7 @@ export const getLooseSettlements = async (): Promise<Batch> => {
     .data;
   return {
     settlements: data,
-    id: "",
+    id: undefined,
   };
 };
 
