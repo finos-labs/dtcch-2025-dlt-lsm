@@ -117,7 +117,7 @@ blockchain:
   gas-price: ${BLOCKCHAIN_GAS_PRICE:350000000000}
   gas-multiplier: ${BLOCKCHAIN_GAS_MULTIPLIER:1.0}
   contracts:
-    matchSettlement:
+    dvpOrchestrator:
       address: "${CONTRACT_ADDRESS:0x1239E437441f7E2daAC8ecf315f802D589546B04}"
       contract-class: org.iobuilders.dtcc.contracts.DvpOrchestrator
   default-provider: database
