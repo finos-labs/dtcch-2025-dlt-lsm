@@ -1,10 +1,7 @@
 package io.builders.demo.dtcc.application.query.getpendingsettlements
 
 import io.builders.demo.core.query.QueryHandler
-import io.builders.demo.dtcc.application.query.common.GetLsmBatchesQueryModel
 import io.builders.demo.dtcc.application.query.common.SettlementQueryModel
-import io.builders.demo.dtcc.domain.lsmbatch.LsmBatch
-import io.builders.demo.dtcc.domain.lsmbatch.LsmBatchRepository
 import io.builders.demo.dtcc.domain.settlement.Settlement
 import io.builders.demo.dtcc.domain.settlement.SettlementRepository
 import io.builders.demo.dtcc.domain.settlement.SettlementStatus
@@ -14,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class GetPendingSettlementsQueryHandler implements QueryHandler<List<SettlementQueryModel>, GetPendingSettlementsQuery> {
+class GetPendingSettlementsQueryHandler implements QueryHandler<List<SettlementQueryModel>,
+    GetPendingSettlementsQuery> {
 
     @Autowired
     SettlementRepository settlementRepository

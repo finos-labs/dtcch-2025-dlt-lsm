@@ -24,7 +24,9 @@ class GetPendingSettlementsHttpAdapter implements GetPendingSettlementsPort {
     @GetMapping('/pending-settlements')
     List<SettlementViewModel> getPendingSettlements() {
         this.queryBus.executeAndWait(new GetPendingSettlementsQuery())
-            .collect { this.modelMapper.map(it, SettlementViewModel) }
+            .collect {
+            this.modelMapper.map(it, SettlementViewModel)
+        }
     }
 
 }

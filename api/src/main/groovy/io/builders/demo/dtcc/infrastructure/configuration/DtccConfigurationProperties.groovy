@@ -12,4 +12,5 @@ class DtccConfigurationProperties {
     String cashToken
     String securityToken
     String omnibusAccount
+
 }
