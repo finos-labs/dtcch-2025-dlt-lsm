@@ -18,5 +18,6 @@ export type SettlementRequest = {
 
 export type Batch = {
   id: string;
+  aiResult: string;
   settlements: Settlement[];
 };

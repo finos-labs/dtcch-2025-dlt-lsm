@@ -38,35 +38,37 @@ class CalculateLsmNetAppService {
         List<Settlement> settlements = checkLsmBatchExistsDomainService.execute(model.batchId).settlements
         if (!settlements.empty) {
             List<String> addresses = settlements.collect { [it.buyer.dltAddress, it.seller.dltAddress] }
-                .flatten().toSet().toList()
+                    .flatten().toSet().toList()
             AccountBalancesQueryModel balancesQueryModel = queryBus.executeAndWait(new GetBalanceQuery(
-                addresses: addresses
+                    addresses: addresses
             ))
             Map<String, Balance> balances = [:]
             balancesQueryModel.balances.forEach { balance ->
                 String userId = userRepository.findByDltAddress(balance.userAddress).get().id
                 balances[userId] = new Balance(
-                    cashAmount: balance.cashToken,
-                    tokenAmount: balance.securityToken
+                        cashAmount: balance.cashToken,
+                        tokenAmount: balance.securityToken
                 )
             }
             GetAiCombinationQueryModel selectedSettlements = queryBus.executeAndWait(new GetLsmNetResultQuery(
-                settlements: settlements.collect { settlement ->
-                    new IASettlement(
-                        tokenAmount: settlement.securityAmount,
-                        cashAmount: settlement.cashAmount,
-                        buyer: settlement.buyer.id,
-                        seller: settlement.seller.id,
-                        id: settlement.id
-                    )
-                },
-                balances: balances
+                    settlements: settlements.collect { settlement ->
+                        new IASettlement(
+                                tokenAmount: settlement.securityAmount,
+                                cashAmount: settlement.cashAmount,
+                                buyer: settlement.buyer.id,
+                                seller: settlement.seller.id,
+                                id: settlement.id
+                        )
+                    },
+                    balances: balances
             ))
             if (!selectedSettlements.settlements.empty) {
-                commandBus.executeAndWait(new PersistLsmNetCommand(
-                    settlementIds: selectedSettlements.settlements*.id,
-                    batchId: model.batchId,
-                    aiOutput: selectedSettlements.aiResult)
+                commandBus.executeAndWait(
+                        new PersistLsmNetCommand(
+                                settlementIds: selectedSettlements.settlements*.id,
+                                batchId: model.batchId,
+                                aiOutput: selectedSettlements.aiResult
+                        )
                 )
             }
         }

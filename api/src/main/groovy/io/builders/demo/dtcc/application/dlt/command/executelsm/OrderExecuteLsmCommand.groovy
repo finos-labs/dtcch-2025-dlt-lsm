@@ -6,6 +6,7 @@ import io.builders.demo.dtcc.domain.lsmbatch.event.ExecuteLsmOrderedEvent
 
 class OrderExecuteLsmCommand extends Command<ExecuteLsmOrderedEvent> {
 
+    Integer batchId
     List<Transaction> transactions
 
 }
