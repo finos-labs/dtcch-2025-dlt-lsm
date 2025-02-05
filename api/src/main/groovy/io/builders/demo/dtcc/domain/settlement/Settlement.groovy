@@ -40,7 +40,7 @@ class Settlement extends BaseEntity {
     OffsetDateTime executionDate
 
     @ManyToOne
-    @JoinColumn(name = 'lsm_batch_id', nullable = false)
+    @JoinColumn(name = 'lsm_batch_id', nullable = true)
     LsmBatch lsmBatch
 
 }
