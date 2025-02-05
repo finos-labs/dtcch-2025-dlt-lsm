@@ -5,13 +5,14 @@ and local refinement to select a feasible subset of settlements.
 """
 
 import json
-import time
-import numpy as np
-import random
-from deap import base, creator, tools
 import multiprocessing
-import optuna
+import random
+import time
 from functools import partial
+
+import numpy as np
+import optuna
+from deap import base, creator, tools
 
 
 # ----------------------------
@@ -196,7 +197,8 @@ def local_refinement_vectorized(individual, settlements, client_cash, client_tok
 # ----------------------------
 # GA using DEAP with binary representation (with selective repair)
 # ----------------------------
-def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate=0.7, repair_rate=0.5):
+def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate=0.7, init_prob=0.5, parallelism=False,
+           use_repair=False, repair_prob=0.5):
     # Preprocess data into NumPy arrays.
     client_cash, client_token, settlement_cash, settlement_token, settlement_buyer, settlement_seller, clients = preprocess_data(
         balances, settlements)
@@ -209,7 +211,12 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
 
     toolbox = base.Toolbox()
     n = len(settlements)
-    toolbox.register("attr_bool", random.randint, 0, 1)
+
+    # Custom init function with probability init_prob for 1.
+    def init_bit():
+        return 1 if random.random() < init_prob else 0
+
+    toolbox.register("attr_bool", init_bit)
     toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, n=n)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
@@ -226,8 +233,12 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
     toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
     toolbox.register("select", tools.selTournament, tournsize=3)
 
-    pool = multiprocessing.Pool(processes=4)
-    toolbox.register("map", pool.map)
+    pool = None
+    if parallelism:
+        pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+        toolbox.register("map", pool.map)
+    else:
+        toolbox.register("map", map)
 
     pop = toolbox.population(n=pop_size)
 
@@ -259,7 +270,7 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
         for ind in offspring:
             if not is_feasible(ind, client_cash, client_token, settlement_cash, settlement_token,
                                settlement_buyer, settlement_seller):
-                if random.random() < repair_rate:
+                if use_repair and random.random() < repair_prob:
                     repaired = repair_individual(ind, client_cash, client_token,
                                                  settlement_cash, settlement_token,
                                                  settlement_buyer, settlement_seller)
@@ -271,15 +282,11 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
             ind.fitness.values = fit
         pop[:] = offspring
         best = tools.selBest(pop, 1)[0]
-        if gen % 10 == 0 or gen == ngen - 1:
-            sel_settlements = [s for bit, s in zip(best, settlements) if bit == 1]
-            n_sel = len(sel_settlements)
-            total_cash = sum(s["cashAmount"] for s in sel_settlements)
-            print(
-                f"Generation {gen}: Best fitness = {best.fitness.values[0]:.2f}, Tx = {n_sel}, Cash = {total_cash:.2f}")
     best_individual = best
-    pool.close()
-    pool.join()
+
+    if parallelism:
+        pool.close()
+        pool.join()
 
     # Also return the local refinement function bound with the preprocessed arrays.
     local_refine_fn = partial(local_refinement_vectorized,
@@ -297,18 +304,19 @@ def run_ga(settlements, balances, ngen=100, pop_size=100, mut_rate=0.25, cx_rate
 # Optuna objective function for hyperparameter optimization
 # ----------------------------
 def objective(trial):
-    pop_size = trial.suggest_int("pop_size", 80, 150)
-    ngen = trial.suggest_int("ngen", 60, 100)
-    mut_rate = trial.suggest_float("mut_rate", 0.2, 0.3)
-    cx_rate = trial.suggest_float("cx_rate", 0.7, 0.8)
-    repair_rate = trial.suggest_float("repair_rate", 0.4, 0.6)
+    pop_size = trial.suggest_int("pop_size", 50, 300)
+    ngen = trial.suggest_int("ngen", 50, 150)
+    mut_rate = trial.suggest_float("mut_rate", 0.25, 0.35)
+    cx_rate = trial.suggest_float("cx_rate", 0.5, 0.9)
+    init_prob = trial.suggest_float("init_prob", 0.2, 0.9)
+
     global settlements, balances  # Use global variables loaded in main()
     best, ga_settlements, local_refine_fn = run_ga(settlements, balances,
                                                    ngen=ngen,
                                                    pop_size=pop_size,
                                                    mut_rate=mut_rate,
                                                    cx_rate=cx_rate,
-                                                   repair_rate=repair_rate, )
+                                                   init_prob=init_prob)
     selected = [s for bit, s in zip(best, ga_settlements) if bit == 1]
     num_transactions = len(selected)
     total_cash = sum(s["cashAmount"] for s in selected)
@@ -325,8 +333,8 @@ def main():
     balances, settlements = load_data("data.json")
     print(f"Loaded {len(settlements)} settlements and {len(balances)} clients.")
 
-    study = optuna.create_study(direction="maximize")
-    study.optimize(objective, n_trials=5, n_jobs=1)
+    study = optuna.create_study(direction="maximize", pruner=optuna.pruners.MedianPruner())
+    study.optimize(objective, n_trials=10, n_jobs=multiprocessing.cpu_count())
     print("Best hyperparameters:", study.best_params)
     print("Best score:", study.best_value)
     best_params = study.best_params
@@ -336,28 +344,40 @@ def main():
         ngen=best_params["ngen"],
         pop_size=best_params["pop_size"],
         mut_rate=best_params["mut_rate"],
-        cx_rate=best_params["cx_rate"]
+        cx_rate=best_params["cx_rate"],
+        init_prob=best_params.get("init_prob", 0.5, )
     )
+
+    selected_ga = [s for bit, s in zip(best, ga_settlements) if bit == 1]
+    num_tx_ga = len(selected_ga)
+    total_cash_ga = sum(s["cashAmount"] for s in selected_ga)
+    total_token_ga = sum(s["tokenAmount"] for s in selected_ga)
+    score_ga = num_tx_ga * 1e6 + total_cash_ga  # same formula used in evaluate
+    print("\n--- GA best solution ---")
+    print(f"Num TX: {num_tx_ga}")
+    print(f"Total cash: {total_cash_ga}")
+    print(f"Total token: {total_token_ga}")
+    print(f"Fitness-like score: {score_ga:.2f}")
+
     # Apply local refinement.
     refined_solution = local_refine_fn(best)
-    selected = [s for bit, s in zip(refined_solution, ga_settlements) if bit == 1]
-    output_ids = [s["id"] for s in selected]
+    selected_refined = [s for bit, s in zip(refined_solution, ga_settlements) if bit == 1]
+    num_tx_refined = len(selected_refined)
+    total_cash_refined = sum(s["cashAmount"] for s in selected_refined)
+    total_token_refined = sum(s["tokenAmount"] for s in selected_refined)
+    score_refined = num_tx_refined * 1e6 + total_cash_refined
 
-    # Write output file.
+    print("\n--- Refined best solution ---")
+    print(f"Num TX: {num_tx_refined}")
+    print(f"Total cash: {total_cash_refined}")
+    print(f"Total token: {total_token_refined}")
+    print(f"Fitness-like score: {score_refined:.2f}")
+
+    output_ids = [s["id"] for s in selected_refined]
     with open("output.json", "w") as f:
         json.dump({"output": output_ids}, f, indent=2)
     print("\nOutput written to 'output.json'")
 
-    n_sel = len(selected)
-    total_cash = sum(s["cashAmount"] for s in selected)
-    total_token = sum(s["tokenAmount"] for s in selected)
-    print("\nFinal processed settlements (after local refinement):")
-    for s in selected:
-        print(f"Settlement {s['id']}: Buyer = {s['buyer']}, Seller = {s['seller']}, "
-              f"Cash = {s['cashAmount']}, Token = {s['tokenAmount']}")
-    print(f"\nTotal processed settlements: {n_sel}")
-    print(f"Total cash moved: {total_cash}")
-    print(f"Total token moved: {total_token}")
     print(f"Processing time: {time.time() - start_time:.2f} seconds")
 
 
