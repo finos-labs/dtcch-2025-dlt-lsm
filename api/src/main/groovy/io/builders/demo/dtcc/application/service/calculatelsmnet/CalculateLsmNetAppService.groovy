@@ -44,8 +44,8 @@ class CalculateLsmNetAppService {
             ))
             Map<String, Balance> balances = [:]
             balancesQueryModel.balances.forEach { balance ->
-                String userAlias = userRepository.findByDltAddress(balance.userAddress).get().alias
-                balances[userAlias] = new Balance(
+                String userId = userRepository.findByDltAddress(balance.userAddress).get().id
+                balances[userId] = new Balance(
                     cashAmount: balance.cashToken,
                     tokenAmount: balance.securityToken
                 )
