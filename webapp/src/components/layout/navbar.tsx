@@ -4,11 +4,9 @@ import { useState } from "react";
 import image from "../../assets/Simbolo_ioB.png";
 import Button from "../button/io-button";
 import { NumberInputField } from "../ui/number-input";
-import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [amount, setAmount] = useState("5");
-  const navigate = useNavigate();
 
   return (
     <Flex
@@ -45,7 +43,6 @@ const Navbar = () => {
         <Button
           onClick={() => {
             createRandomSettlements(Number.parseInt(amount));
-            navigate(0);
           }}
         >
           Create Random Settlements
@@ -54,7 +51,6 @@ const Navbar = () => {
         <Button
           onClick={() => {
             executeLsm();
-            navigate(0);
           }}
         >
           Exectue LSM
