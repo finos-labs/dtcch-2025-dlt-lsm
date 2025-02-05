@@ -46,8 +46,12 @@ class GeminiIAAdapter implements IAPort {
             def jsonSlurper = new JsonSlurper()
             def responseJson = jsonSlurper.parseText(responseText)
             log.info("Response like Json: ${responseJson}")
-            def res = responseJson.candidates[0]?.content?.parts[0]?.text?.replaceAll('```', '')?.replaceAll('json', '')
-            responseCombination = jsonSlurper.parseText(res)
+            if (responseJson.candidates[0]?.content) {
+                def res = responseJson.candidates[0]?.content?.parts[0]?.text?.replaceAll('```', '')?.replaceAll('json', '')
+                responseCombination = jsonSlurper.parseText(res)
+            } else {
+                throw new Exception("No content in response")
+            }
         }
         catch (Exception e) {
             log.error("Exception when call to IA: ${e.cause} ${e.message}")
