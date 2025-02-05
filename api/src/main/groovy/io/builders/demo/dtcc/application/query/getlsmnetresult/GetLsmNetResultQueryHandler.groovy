@@ -4,7 +4,6 @@ import io.builders.demo.core.query.QueryHandler
 import io.builders.demo.dtcc.application.query.common.GetAiCombinationQueryModel
 import io.builders.demo.dtcc.domain.utils.NetUtils
 import io.builders.demo.integration.IAPort
-import io.builders.demo.integration.model.Balance
 import io.builders.demo.integration.model.IARequest
 import io.builders.demo.integration.model.IASettlement
 import jakarta.validation.Valid
@@ -16,7 +15,7 @@ import groovy.util.logging.Slf4j
 @Component
 @Slf4j
 @SuppressWarnings(['UnnecessaryGetter', 'DuplicateNumberLiteral', 'LineLength', 'ParameterReassignment', 'UnnecessaryObjectReferences'])
-class GetLsmNetResultQueryHandler implements QueryHandler<boolean, GetLsmNetResultQuery> {
+class GetLsmNetResultQueryHandler implements QueryHandler<GetAiCombinationQueryModel, GetLsmNetResultQuery> {
 
     private static final Integer MAX_TRIES = 100
 
@@ -26,7 +25,7 @@ class GetLsmNetResultQueryHandler implements QueryHandler<boolean, GetLsmNetResu
     String separator = ','
 
     @Override
-    boolean handle(@Valid GetLsmNetResultQuery query) {
+    GetAiCombinationQueryModel handle(@Valid GetLsmNetResultQuery query) {
         List<String> combinationProposed = []
         List<IASettlement> settlementProposed = []
         Boolean isValid = false

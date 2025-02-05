@@ -38,17 +38,20 @@ class ManageAIResponseAppService {
     SettlementRepository settlementRepository
 
     @Autowired
+    NetUtils netUtils
+
+    @Autowired
     UserRepository userRepository
 
     void execute(@Valid List<String> combinationProposed) {
         if(!combinationProposed.empty) {
-            LsmBatch batch = checkLsmBatchExistsDomainService.executeBySettlementId(Integer.valueOf(combinationProposed.first()))
+            LsmBatch batch = settlementRepository.findById(Integer.valueOf(combinationProposed.first())).get().lsmBatch
             List<Settlement> settlements = checkLsmBatchExistsDomainService.execute(batch.id).settlements
             List<Settlement> proposedSettlements = settlementRepository.findAllById(combinationProposed.collect {
                 Integer.valueOf(it)
             })
             if (!settlements.empty) {
-                List<String> addresses = settlements.collect { [it.buyer.dltAddress, it.seller.dltAddress] }
+                List<String> addresses = proposedSettlements.collect { [it.buyer.dltAddress, it.seller.dltAddress] }
                     .flatten().toSet().toList()
                 AccountBalancesQueryModel balancesQueryModel = queryBus.executeAndWait(new GetBalanceQuery(
                     addresses: addresses
@@ -63,7 +66,7 @@ class ManageAIResponseAppService {
                 }
 
                 if(
-                    NetUtils.isValidBalancesCombination(
+                    netUtils.isValidBalancesCombination(
                         proposedSettlements.collect { settlement ->
                             new IASettlement(
                                 tokenAmount: settlement.securityAmount,
@@ -73,7 +76,7 @@ class ManageAIResponseAppService {
                                 id: settlement.id
                             )
                         },
-                        balances: balances
+                         balances
                     )
                 ) {
                     commandBus.executeAndWait(
