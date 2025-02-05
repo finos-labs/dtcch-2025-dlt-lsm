@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component
 @SuppressWarnings(['UnnecessaryGetter', 'DuplicateNumberLiteral', 'LineLength', 'ParameterReassignment', 'UnnecessaryObjectReferences'])
 class GetLsmNetResultQueryHandler implements QueryHandler<GetAiCombinationQueryModel, GetLsmNetResultQuery> {
 
+    private static final Integer MAX_TRIES = 100
+
     @Autowired
     IAPort iaPort
 
@@ -26,9 +28,9 @@ class GetLsmNetResultQueryHandler implements QueryHandler<GetAiCombinationQueryM
         List<String> combinationProposed = []
         List<IASettlement> settlementProposed = []
         Boolean isValid = false
-        Integer tries = 5
+        Integer tries = MAX_TRIES
         while (!isValid && tries > 0) {
-            log.debug("[Try-${5 - tries}] Trying to obtain a valid combination of settlements")
+            log.debug("[Try-${MAX_TRIES - tries}] Trying to obtain a valid combination of settlements")
             combinationProposed = iaPort.obtainIACombination(new IARequest(settlements: query.settlements, balances: query.balances))
             settlementProposed = query.settlements.findAll { combinationProposed.contains(it.id.toString()) || combinationProposed.contains(it.id) }
             isValid = isValidBalancesCombination(settlementProposed, query.balances)

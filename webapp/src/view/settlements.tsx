@@ -85,7 +85,16 @@ const AIInfo = ({ code }: { code: string }) => {
       <Text textStyle="2xl" marginBottom="1rem">
         AI Output
       </Text>
-      <Box bg="blackAlpha.100" height="100%" borderRadius="md" p="2rem">
+      <Box
+        bg="blackAlpha.100"
+        height="100%"
+        borderRadius="md"
+        p="2rem"
+        style={{
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+        }}
+      >
         <Code className="">{code}</Code>
       </Box>
     </Flex>
@@ -160,9 +169,18 @@ const Settlements = () => {
 
   return (
     <>
-      <Text textStyle="2xl" marginBottom="1rem">
-        Settlements
-      </Text>
+      {((pendingSettlements?.settlements.length ?? 0) > 0 ||
+        batches.length > 0) && (
+        <Text textStyle="2xl" marginBottom="1rem">
+          Settlements
+        </Text>
+      )}
+      {(pendingSettlements?.settlements.length ?? 0) == 0 &&
+        batches.length == 0 && (
+          <Text textStyle="2xl" marginBottom="1rem">
+            No Settlements
+          </Text>
+        )}
       <Flex gap={5} direction="column">
         {(pendingSettlements?.settlements.length ?? 0) > 0 && (
           <CollapsibleBatch data={pendingSettlements!} defaultOpen />
