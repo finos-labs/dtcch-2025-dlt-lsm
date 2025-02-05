@@ -1,6 +1,5 @@
 package io.builders.demo.dtcc.infrastructure.endpoint.resetbalances
 
-import io.builders.demo.dtcc.application.service.addbalance.AddBalanceAppServiceModel
 import io.builders.demo.dtcc.application.service.resetbalance.ResetBalanceAppService
 import io.builders.demo.dtcc.application.service.resetbalance.ResetBalanceAppServiceModel
 import io.builders.demo.dtcc.infrastructure.endpoint.resetbalances.model.ResetBalanceRequestModel

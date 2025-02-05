@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 
 @Component
-class OrderMintTokenUserCommandHandler implements CommandHandler<MintTokenUserOrderedEvent, OrderMintTokenUserCommand> {
+class OrderMintTokenUserCommandHandler implements CommandHandler<MintTokenUserOrderedEvent,
+    OrderMintTokenUserCommand> {
 
     @Autowired
     ContractLoader contractLoader
@@ -36,4 +37,5 @@ class OrderMintTokenUserCommandHandler implements CommandHandler<MintTokenUserOr
             amount: command.amount
         ))
     }
+
 }
