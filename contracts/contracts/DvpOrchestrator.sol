@@ -70,6 +70,7 @@ contract DvpOrchestrator is IDvpOrchestrator {
     }
 
     function executeLsm(
+        uint256 _batchId,
         Transaction[] calldata _lsmTransactions
     ) external override returns (bool) {
         uint256 transactionsLength = _lsmTransactions.length;
@@ -84,7 +85,7 @@ contract DvpOrchestrator is IDvpOrchestrator {
             token.transferFrom(txn.from, txn.to, txn.amount);
         }
 
-        emit LsmExecuted(_lsmTransactions);
+        emit LsmExecuted(_batchId, _lsmTransactions);
         return true;
     }
 
