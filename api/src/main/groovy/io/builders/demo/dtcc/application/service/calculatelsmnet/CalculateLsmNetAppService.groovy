@@ -11,7 +11,6 @@ import io.builders.demo.dtcc.application.query.getlsmnetresult.GetLsmNetResultQu
 import io.builders.demo.dtcc.domain.lsmbatch.service.CheckLsmBatchExistsDomainService
 import io.builders.demo.dtcc.domain.settlement.Settlement
 import io.builders.demo.dtcc.domain.user.UserRepository
-import io.builders.demo.dtcc.domain.user.service.CheckUserExistsDomainService
 import io.builders.demo.integration.model.Balance
 import io.builders.demo.integration.model.IASettlement
 import jakarta.validation.Valid
@@ -20,13 +19,11 @@ import org.springframework.stereotype.Service
 
 @Service
 @Slf4j
+@SuppressWarnings(['UseCollectMany'])
 class CalculateLsmNetAppService {
 
     @Autowired
     QueryBus queryBus
-
-    @Autowired
-    CheckUserExistsDomainService checkUserExistsDomainService
 
     @Autowired
     CommandBus commandBus
@@ -40,32 +37,37 @@ class CalculateLsmNetAppService {
     void execute(@Valid CalculateLsmNetAppServiceModel model) {
         List<Settlement> settlements = checkLsmBatchExistsDomainService.execute(model.batchId).settlements
         if (!settlements.empty) {
-            List<String> addresses = settlements.collect { [it.buyer.dltAddress, it.seller.dltAddress] }.flatten().toSet().toList()
+            List<String> addresses = settlements.collect { [it.buyer.dltAddress, it.seller.dltAddress] }
+                .flatten().toSet().toList()
             AccountBalancesQueryModel balancesQueryModel = queryBus.executeAndWait(new GetBalanceQuery(
-                    addresses: addresses
+                addresses: addresses
             ))
             Map<String, Balance> balances = [:]
             balancesQueryModel.balances.forEach { balance ->
                 String userAlias = userRepository.findByDltAddress(balance.userAddress).get().alias
                 balances[userAlias] = new Balance(
-                        cashAmount: balance.cashToken,
-                        tokenAmount: balance.securityToken
+                    cashAmount: balance.cashToken,
+                    tokenAmount: balance.securityToken
                 )
             }
             GetAiCombinationQueryModel selectedSettlements = queryBus.executeAndWait(new GetLsmNetResultQuery(
-                    settlements: settlements.collect { settlement ->
-                        new IASettlement(
-                                tokenAmount: settlement.securityAmount,
-                                cashAmount: settlement.cashAmount,
-                                buyer: settlement.buyer.id,
-                                seller: settlement.seller.id,
-                                id: settlement.id
-                        )
-                    },
-                    balances: balances
+                settlements: settlements.collect { settlement ->
+                    new IASettlement(
+                        tokenAmount: settlement.securityAmount,
+                        cashAmount: settlement.cashAmount,
+                        buyer: settlement.buyer.id,
+                        seller: settlement.seller.id,
+                        id: settlement.id
+                    )
+                },
+                balances: balances
             ))
             if (!selectedSettlements.settlements.empty) {
-                commandBus.executeAndWait(new PersistLsmNetCommand(settlementIds: selectedSettlements.settlements*.id, batchId: model.batchId, aiOutput: selectedSettlements.aiResult))
+                commandBus.executeAndWait(new PersistLsmNetCommand(
+                    settlementIds: selectedSettlements.settlements*.id,
+                    batchId: model.batchId,
+                    aiOutput: selectedSettlements.aiResult)
+                )
             }
         }
     }

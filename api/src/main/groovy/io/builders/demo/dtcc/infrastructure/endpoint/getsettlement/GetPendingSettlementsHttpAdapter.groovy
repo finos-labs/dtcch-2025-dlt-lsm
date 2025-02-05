@@ -25,8 +25,8 @@ class GetPendingSettlementsHttpAdapter implements GetPendingSettlementsPort {
     List<SettlementViewModel> getPendingSettlements() {
         this.queryBus.executeAndWait(new GetPendingSettlementsQuery())
             .collect {
-            this.modelMapper.map(it, SettlementViewModel)
-        }
+                this.modelMapper.map(it, SettlementViewModel)
+            }
     }
 
 }

@@ -1,5 +1,6 @@
 package io.builders.demo.core.command
 
+import groovy.util.logging.Slf4j
 import io.builders.demo.core.event.Event
 import io.builders.demo.core.exception.CommandHandlerNotFoundException
 import io.builders.demo.core.exception.CommandTimeoutException
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Primary
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.stereotype.Component
 
 import java.lang.reflect.Modifier
@@ -20,8 +20,6 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
-
-import groovy.util.logging.Slf4j
 
 @Component
 @Primary
