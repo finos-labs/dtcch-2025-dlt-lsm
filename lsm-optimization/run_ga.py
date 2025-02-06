@@ -330,7 +330,7 @@ def execute_lsm(balances, settlements):
     # Use partial to pass balances and settlements to the objective function.
     obj = partial(objective, balances=balances, settlements=settlements)
     study = optuna.create_study(direction="maximize", pruner=optuna.pruners.MedianPruner())
-    study.optimize(obj, n_trials=10, n_jobs=multiprocessing.cpu_count())
+    study.optimize(obj, n_trials=5, n_jobs=multiprocessing.cpu_count())
     print("Best hyperparameters:", study.best_params)
     print("Best score:", study.best_value)
     best_params = study.best_params

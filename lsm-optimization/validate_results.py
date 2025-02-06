@@ -17,8 +17,8 @@ the resulting cash and token balances (after applying the settlements)
 are non-negative.
 """
 
-import json
 import argparse
+import json
 import sys
 
 
@@ -63,6 +63,9 @@ def validate_selection(data, selected_ids):
     # Validate balances
     valid = True
     print("\nSummary of resulting balances after applying settlements:")
+    print("Total clients:", len(balances))
+    print("Total settlements:", len(settlements))
+    print(f"Total selected settlements: {len(selected_settlements)}\n")
     for client, balance in balances.items():
         cash, token = balance["cash"], balance["token"]
         print(f"Client '{client}': Final cash = {cash:.3f}, Final tokens = {token:.3f}")
