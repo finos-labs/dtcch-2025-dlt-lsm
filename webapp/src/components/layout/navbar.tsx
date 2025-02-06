@@ -1,4 +1,8 @@
-import { createRandomSettlements, executeLsm } from "@/service/api-service";
+import {
+  createRandomSettlements,
+  executeLsm,
+  resetBalances,
+} from "@/service/api-service";
 import { Flex, Image, NumberInputRoot, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import image from "../../assets/Simbolo_ioB.png";
@@ -7,6 +11,7 @@ import { NumberInputField } from "../ui/number-input";
 
 const Navbar = () => {
   const [amount, setAmount] = useState("5");
+  const [balanceAmount, setBalanceAmount] = useState("1000");
 
   return (
     <Flex
@@ -30,6 +35,23 @@ const Navbar = () => {
         </Text>
       </Flex>
       <Flex gap={4} alignItems="center">
+        |<Text>Balance:</Text>
+        <NumberInputRoot
+          maxW="50px"
+          value={balanceAmount}
+          onValueChange={(e) => {
+            setBalanceAmount(e.value);
+          }}
+        >
+          <NumberInputField />
+        </NumberInputRoot>
+        <Button
+          onClick={() => {
+            resetBalances(Number.parseInt(amount));
+          }}
+        >
+          Reset Balances
+        </Button>
         |<Text>Amount:</Text>
         <NumberInputRoot
           maxW="50px"
