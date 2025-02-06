@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated
 
 @Component
 @Validated
+@SuppressWarnings(['UnnecessaryGetter'])
 class ContractEventServiceMapper {
 
     @Autowired

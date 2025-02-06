@@ -32,8 +32,8 @@ export const createRandomSettlements = async (amount: number) => {
       sellerId = Math.floor(Math.random() * 5) + 1;
     }
     elements.settlements.push({
-      securityAmount: Math.floor(Math.random() * 15) + 1,
-      cashAmount: Math.floor(Math.random() * 15) + 1,
+      securityAmount: Math.floor(Math.random() * 150) + 1,
+      cashAmount: Math.floor(Math.random() * 150) + 1,
       buyerId,
       sellerId,
     });
