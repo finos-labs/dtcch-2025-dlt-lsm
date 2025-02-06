@@ -1,6 +1,5 @@
 package io.builders.demo.integration.sagemaker
 
-
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.sagemakerruntime.AmazonSageMakerRuntime
@@ -8,6 +7,8 @@ import com.amazonaws.services.sagemakerruntime.AmazonSageMakerRuntimeClientBuild
 import com.amazonaws.services.sagemakerruntime.model.InvokeEndpointAsyncRequest
 import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
+import io.builders.demo.dtcc.infrastructure.configuration.SagemakerConfigurationProperties
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
@@ -15,12 +16,15 @@ import org.springframework.stereotype.Component
 @SuppressWarnings(['NoDef', 'VariableTypeRequired', 'CatchException', 'MethodReturnTypeRequired', 'LineLength'])
 class SMAdapter implements SMPort {
 
+    @Autowired
+    SagemakerConfigurationProperties sagemakerConfigurationProperties
+
     @Override
     void makeSMRequest(SMRequest smRequest) {
-        String awsRegion = "us-west-2"
-        String s3Bucket = "ga-lsm-bucket"
-        String endpointName = "GA-LSM-Async-Endpoint"
-        String callbackUrl = "https://webhook.site/235bd5f6-5317-4101-9b7e-98f0216747a2"
+        String awsRegion = sagemakerConfigurationProperties.awsRegion
+        String s3Bucket = sagemakerConfigurationProperties.s3Bucket
+        String endpointName = sagemakerConfigurationProperties.endpointName
+        String callbackUrl = sagemakerConfigurationProperties.callbackUrl
 
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion(awsRegion).build()
         AmazonSageMakerRuntime sagemakerRuntime = AmazonSageMakerRuntimeClientBuilder.standard().withRegion(awsRegion).build()

@@ -155,3 +155,9 @@ dtcc:
   cashToken: ${DTCC_CASH_TOKEN:0x9cECEB96469c6f96276b7dAC8BAA59218762C9F0}
   securityToken: ${DTCC_SECURITY_TOKEN:0xe0732A10Fee16FDca3d1B196b86014F7fcb67Ac3}
   omnibusAccount: ${DTCC_OMNIBUS_ACCOUNT:0x4d4ccf261cc1551920ab72479351c7670a839a5a}
+
+sagemaker:
+  awsRegion: ${SAGEMAKER_AWS_REGION:us-west-2}
+  s3Bucket: ${SAGEMAKER_S3BUCKET:ga-lsm-bucket}
+  endpointName: ${SAGEMAKER_ENDPOINT_NAME:GA-LSM-Async-Endpoint}
+  callbackUrl: ${SAGEMAKER_PROTOCOL:https}://${SAGEMAKER_HOST:api.dtcc.io.builders}/api/v1/${SAGEMAKER_CALLBACK_URL:callback}
