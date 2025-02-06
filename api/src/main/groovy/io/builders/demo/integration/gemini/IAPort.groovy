@@ -1,4 +1,4 @@
-package io.builders.demo.integration
+package io.builders.demo.integration.gemini
 
 import io.builders.demo.integration.model.IARequest
 

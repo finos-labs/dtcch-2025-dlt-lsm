@@ -1,6 +1,7 @@
 package io.builders.demo.integration
 
 import io.builders.demo.core.BaseSpecification
+import io.builders.demo.integration.gemini.GeminiIAAdapter
 import io.builders.demo.integration.model.Balance
 import io.builders.demo.integration.model.IARequest
 import io.builders.demo.integration.model.IASettlement

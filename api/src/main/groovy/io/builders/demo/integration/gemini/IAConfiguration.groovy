@@ -1,4 +1,4 @@
-package io.builders.demo.integration
+package io.builders.demo.integration.gemini
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration

@@ -3,7 +3,7 @@ package io.builders.demo.dtcc.application.query.getlsmnetresult
 import io.builders.demo.core.query.QueryHandler
 import io.builders.demo.dtcc.application.query.common.GetAiCombinationQueryModel
 import io.builders.demo.dtcc.domain.utils.NetUtils
-import io.builders.demo.integration.IAPort
+import io.builders.demo.integration.gemini.IAPort
 import io.builders.demo.integration.model.IARequest
 import io.builders.demo.integration.model.IASettlement
 import jakarta.validation.Valid
