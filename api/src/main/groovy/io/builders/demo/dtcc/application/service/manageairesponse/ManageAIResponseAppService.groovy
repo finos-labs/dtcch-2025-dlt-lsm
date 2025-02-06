@@ -10,6 +10,7 @@ import io.builders.demo.dtcc.domain.lsmbatch.LsmBatch
 import io.builders.demo.dtcc.domain.lsmbatch.service.CheckLsmBatchExistsDomainService
 import io.builders.demo.dtcc.domain.settlement.Settlement
 import io.builders.demo.dtcc.domain.settlement.SettlementRepository
+import io.builders.demo.dtcc.domain.user.User
 import io.builders.demo.dtcc.domain.user.UserRepository
 import io.builders.demo.dtcc.domain.utils.NetUtils
 import io.builders.demo.integration.model.Balance
@@ -53,7 +54,7 @@ class ManageAIResponseAppService {
     SMPort smPort
 
     void execute(@Valid List<Integer> combinationProposed) {
-        if(!combinationProposed.empty) {
+        if (!combinationProposed.empty) {
             LsmBatch batch = settlementRepository.findById(combinationProposed.first()).get().lsmBatch
             List<Settlement> settlements = checkLsmBatchExistsDomainService.execute(batch.id).settlements
             List<Settlement> proposedSettlements = settlementRepository.findAllById(combinationProposed)
@@ -72,7 +73,7 @@ class ManageAIResponseAppService {
                     )
                 }
 
-                if(
+                if (
                     netUtils.isValidBalancesCombination(
                         proposedSettlements.collect { settlement ->
                             new IASettlement(
@@ -83,20 +84,27 @@ class ManageAIResponseAppService {
                                 id: settlement.id
                             )
                         },
-                         balances
+                        balances
                     )
                 ) {
+                    String aiOutput = """\tTotal Settlements: ${settlements.size()}
+\tTotal Proposed: ${combinationProposed.size()}
+\tTotal Cash Liquidity: ${proposedSettlements*.cashAmount.sum()}
+\tTotal Token Liquidity: ${proposedSettlements*.securityAmount.sum()}
+
+\tCombination:
+\t\t${combinationProposed.join(", ")}
+"""
                     commandBus.executeAndWait(
                         new PersistLsmNetCommand(
                             settlementIds: proposedSettlements*.id,
                             batchId: batch.id,
-                            aiOutput: combinationProposed.join(", ")
+                            aiOutput: aiOutput
                         )
                     )
                     counter.set(0)
-                }
-                else {
-                    if(counter.get() < 5) {
+                } else {
+                    if (counter.get() < 5) {
                         log.info("No valid combination was found, retrying...")
                         smPort.makeSMRequest(new SMRequest(
                             balances: balances.collect { clientId, balance ->
@@ -113,8 +121,7 @@ class ManageAIResponseAppService {
                             }
                         ))
                         counter.incrementAndGet()
-                    }
-                    else {
+                    } else {
                         log.error('No valid combination was found after 5 retries')
                         counter.set(0)
                     }

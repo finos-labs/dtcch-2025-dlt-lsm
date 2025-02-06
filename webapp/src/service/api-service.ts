@@ -24,7 +24,7 @@ export const getSettlementDetails = async (id: string) => {
 };
 
 export const resetBalances = async (amount: number) => {
-  return (await axios.post(getUrl("/reset-balance/").toString(), { amount }))
+  return (await axios.post(getUrl("/reset-balance").toString(), { amount }))
     .data;
 };
 

@@ -42,20 +42,20 @@ class TransactionServiceMapper {
 
     @Async
     void execute(@Valid TransactionDetails incomingTransaction) {
-        Transaction transaction = checkTransactionExistsDomainService.execute(incomingTransaction.transactionHash)
-        commandBus.executeAndWait(new UpdateTransactionStatusCommand(
-            id: transaction.id, status: TransactionStatus.SUCCESS
-        ))
-        DltEvent event = modelMapper.map(
-            incomingTransaction,
-            configuration.mappers[transaction.eventName] as Class<? extends FailedDltEvent>
-        ).tap { event ->
-            event.blockTimestamp = OffsetDateTime.ofInstant(
-                Instant.ofEpochSecond(incomingTransaction.blockTimestamp.toLong()),
-                ZoneId.systemDefault()
-            )
-        }
-        eventBus.publish(event)
+//        Transaction transaction = checkTransactionExistsDomainService.execute(incomingTransaction.transactionHash)
+//        commandBus.executeAndWait(new UpdateTransactionStatusCommand(
+//            id: transaction.id, status: TransactionStatus.SUCCESS
+//        ))
+//        DltEvent event = modelMapper.map(
+//            incomingTransaction,
+//            configuration.mappers[transaction.eventName] as Class<? extends FailedDltEvent>
+//        ).tap { event ->
+//            event.blockTimestamp = OffsetDateTime.ofInstant(
+//                Instant.ofEpochSecond(incomingTransaction.blockTimestamp.toLong()),
+//                ZoneId.systemDefault()
+//            )
+//        }
+//        eventBus.publish(event)
     }
 
 }
