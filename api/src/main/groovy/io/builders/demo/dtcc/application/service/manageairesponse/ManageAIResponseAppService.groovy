@@ -52,13 +52,11 @@ class ManageAIResponseAppService {
     @Autowired
     SMPort smPort
 
-    void execute(@Valid List<String> combinationProposed) {
+    void execute(@Valid List<Integer> combinationProposed) {
         if(!combinationProposed.empty) {
-            LsmBatch batch = settlementRepository.findById(Integer.valueOf(combinationProposed.first())).get().lsmBatch
+            LsmBatch batch = settlementRepository.findById(combinationProposed.first()).get().lsmBatch
             List<Settlement> settlements = checkLsmBatchExistsDomainService.execute(batch.id).settlements
-            List<Settlement> proposedSettlements = settlementRepository.findAllById(combinationProposed.collect {
-                Integer.valueOf(it)
-            })
+            List<Settlement> proposedSettlements = settlementRepository.findAllById(combinationProposed)
             if (!settlements.empty) {
                 List<String> addresses = proposedSettlements.collect { [it.buyer.dltAddress, it.seller.dltAddress] }
                     .flatten().toSet().toList()
@@ -75,7 +73,7 @@ class ManageAIResponseAppService {
                 }
 
                 if(
-                    !netUtils.isValidBalancesCombination(
+                    netUtils.isValidBalancesCombination(
                         proposedSettlements.collect { settlement ->
                             new IASettlement(
                                 tokenAmount: settlement.securityAmount,
@@ -118,8 +116,7 @@ class ManageAIResponseAppService {
                         counter.incrementAndGet()
                     }
                     else {
-                        Integer counter2 = counter.get()
-                        log.error("No valid combination was found after 5 retries")
+                        log.error('No valid combination was found after 5 retries')
                     }
                 }
 

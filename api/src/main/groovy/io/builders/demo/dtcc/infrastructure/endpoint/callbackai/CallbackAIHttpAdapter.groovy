@@ -16,7 +16,7 @@ class CallbackAIHttpAdapter implements CallbackAIPort {
 
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping('/callback')
-    void execute(@RequestBody List<String> settlements) {
+    void execute(@RequestBody List<Integer> settlements) {
         appService.execute(settlements)
     }
 
