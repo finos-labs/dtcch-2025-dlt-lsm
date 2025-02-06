@@ -160,4 +160,5 @@ sagemaker:
   awsRegion: ${SAGEMAKER_AWS_REGION:us-west-2}
   s3Bucket: ${SAGEMAKER_S3BUCKET:ga-lsm-bucket}
   endpointName: ${SAGEMAKER_ENDPOINT_NAME:GA-LSM-Async-Endpoint}
-  callbackUrl: ${SAGEMAKER_PROTOCOL:https}://${SAGEMAKER_HOST:api.dtcc.io.builders}/api/v1/${SAGEMAKER_CALLBACK_URL:callback}
+#  callbackUrl: ${SAGEMAKER_PROTOCOL:https}://${SAGEMAKER_HOST:api.dtcc.io.builders}/api/v1/${SAGEMAKER_CALLBACK_URL:callback}
+  callbackUrl: https://webhook.site/9000dd80-7cc6-4fd0-9f2d-ca873c93f37c
