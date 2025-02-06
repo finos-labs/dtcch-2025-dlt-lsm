@@ -1,6 +1,8 @@
 package io.builders.demo.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.builders.demo.integration.gemini.IAConfiguration
+import io.builders.demo.integration.gemini.IAPort
 import io.builders.demo.integration.model.IARequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
