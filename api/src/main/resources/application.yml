@@ -139,15 +139,15 @@ hedera:
     id: ${HEDERA_ACCOUNT_ID:0.0.5469588}
     privateKey: ${HEDERA_ACCOUNT_PRIVATE_KEY:}
 
-logging:
-  level:
-    org.springframework.web: DEBUG
-    net.consensys: DEBUG
-    net.consensys.configs: ERROR
-    org.springframework.amqp: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c: %M - %m%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c: %M - %m%n"
+#logging:
+#  level:
+#    org.springframework.web: DEBUG
+#    net.consensys: DEBUG
+#    net.consensys.configs: ERROR
+#    org.springframework.amqp: DEBUG
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c: %M - %m%n"
+#    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c: %M - %m%n"
 
 dtcc:
   defaultAddress: ${DTCC_DEFAULT_ADDRESS:0x708eeb6f709f5138f0f0344e5b6f6ac11ec4a712}
