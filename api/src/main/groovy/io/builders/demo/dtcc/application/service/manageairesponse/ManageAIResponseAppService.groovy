@@ -97,7 +97,6 @@ class ManageAIResponseAppService {
                 }
                 else {
                     if(counter.get() < 5) {
-                        Integer counter3 = counter.get()
                         log.info("No valid combination was found, retrying...")
                         smPort.makeSMRequest(new SMRequest(
                             balances: balances.collect { clientId, balance ->
@@ -117,6 +116,7 @@ class ManageAIResponseAppService {
                     }
                     else {
                         log.error('No valid combination was found after 5 retries')
+                        counter.set(0)
                     }
                 }
 
