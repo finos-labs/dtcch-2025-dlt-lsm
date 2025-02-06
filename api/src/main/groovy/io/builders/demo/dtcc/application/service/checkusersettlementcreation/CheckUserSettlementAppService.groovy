@@ -1,6 +1,5 @@
 package io.builders.demo.dtcc.application.service.checkusersettlementcreation
 
-import groovy.util.logging.Slf4j
 import io.builders.demo.core.command.CommandBus
 import io.builders.demo.core.domain.exception.EntityNotFoundDomainException
 import io.builders.demo.dtcc.application.command.createsettlement.CreateSettlementCommand
@@ -8,6 +7,8 @@ import io.builders.demo.dtcc.domain.user.User
 import io.builders.demo.dtcc.domain.user.service.CheckUserExistsDomainService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+
+import groovy.util.logging.Slf4j
 
 @Service
 @Slf4j

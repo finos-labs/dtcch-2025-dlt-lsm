@@ -1,6 +1,5 @@
 package io.builders.demo.core.command
 
-import groovy.util.logging.Slf4j
 import io.builders.demo.core.event.Event
 import io.builders.demo.core.exception.CommandHandlerNotFoundException
 import io.builders.demo.core.exception.CommandTimeoutException
@@ -20,6 +19,8 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+
+import groovy.util.logging.Slf4j
 
 @Component
 @Primary

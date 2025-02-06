@@ -1,12 +1,13 @@
 package io.builders.demo.dtcc.application.service.resetbalance
 
-import groovy.util.logging.Slf4j
 import io.builders.demo.core.command.CommandBus
 import io.builders.demo.dtcc.application.dlt.command.resetbalance.OrderResetBalanceCommand
 import io.builders.demo.dtcc.domain.user.User
 import io.builders.demo.dtcc.domain.user.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+
+import groovy.util.logging.Slf4j
 
 @Service
 @Slf4j
