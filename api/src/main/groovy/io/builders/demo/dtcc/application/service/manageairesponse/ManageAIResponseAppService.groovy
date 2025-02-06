@@ -14,16 +14,22 @@ import io.builders.demo.dtcc.domain.user.UserRepository
 import io.builders.demo.dtcc.domain.utils.NetUtils
 import io.builders.demo.integration.model.Balance
 import io.builders.demo.integration.model.IASettlement
+import io.builders.demo.integration.sagemaker.SMBalance
+import io.builders.demo.integration.sagemaker.SMPort
+import io.builders.demo.integration.sagemaker.SMRequest
+import io.builders.demo.integration.sagemaker.SMSettlement
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+
+import java.util.concurrent.atomic.AtomicInteger
 
 @Service
 @Slf4j
 @SuppressWarnings(['UseCollectMany'])
 class ManageAIResponseAppService {
 
-    static Integer counter = 0
+    private final AtomicInteger counter = new AtomicInteger(0)
 
     @Autowired
     QueryBus queryBus
@@ -42,6 +48,9 @@ class ManageAIResponseAppService {
 
     @Autowired
     UserRepository userRepository
+
+    @Autowired
+    SMPort smPort
 
     void execute(@Valid List<String> combinationProposed) {
         if(!combinationProposed.empty) {
@@ -66,7 +75,7 @@ class ManageAIResponseAppService {
                 }
 
                 if(
-                    netUtils.isValidBalancesCombination(
+                    !netUtils.isValidBalancesCombination(
                         proposedSettlements.collect { settlement ->
                             new IASettlement(
                                 tokenAmount: settlement.securityAmount,
@@ -83,18 +92,33 @@ class ManageAIResponseAppService {
                         new PersistLsmNetCommand(
                             settlementIds: proposedSettlements*.id,
                             batchId: batch.id,
-                            aiOutput: "AIOUTPUT"
+                            aiOutput: combinationProposed.join(", ")
                         )
                     )
-                    counter = 0
+                    counter.set(0)
                 }
                 else {
-                    if(counter < 5) {
+                    if(counter.get() < 5) {
+                        Integer counter3 = counter.get()
                         log.info("No valid combination was found, retrying...")
-                        //call new AI
-                        counter++
+                        smPort.makeSMRequest(new SMRequest(
+                            balances: balances.collect { clientId, balance ->
+                                new SMBalance(client: clientId, cashAmount: balance.cashAmount, tokenAmount: balance.tokenAmount)
+                            },
+                            settlements: settlements.collect { settlement ->
+                                new SMSettlement(
+                                    tokenAmount: settlement.securityAmount,
+                                    cashAmount: settlement.cashAmount,
+                                    buyer: settlement.buyer.id,
+                                    seller: settlement.seller.id,
+                                    id: settlement.id
+                                )
+                            }
+                        ))
+                        counter.incrementAndGet()
                     }
                     else {
+                        Integer counter2 = counter.get()
                         log.error("No valid combination was found after 5 retries")
                     }
                 }

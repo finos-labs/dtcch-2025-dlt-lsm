@@ -12,6 +12,10 @@ import io.builders.demo.dtcc.domain.settlement.Settlement
 import io.builders.demo.dtcc.domain.user.UserRepository
 import io.builders.demo.integration.model.Balance
 import io.builders.demo.integration.model.IASettlement
+import io.builders.demo.integration.sagemaker.SMBalance
+import io.builders.demo.integration.sagemaker.SMPort
+import io.builders.demo.integration.sagemaker.SMRequest
+import io.builders.demo.integration.sagemaker.SMSettlement
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -35,6 +39,9 @@ class CalculateLsmNetAppService {
     @Autowired
     UserRepository userRepository
 
+    @Autowired
+    SMPort smPort
+
     void execute(@Valid CalculateLsmNetAppServiceModel model) {
         List<Settlement> settlements = checkLsmBatchExistsDomainService.execute(model.batchId).settlements
         if (!settlements.empty) {
@@ -50,6 +57,45 @@ class CalculateLsmNetAppService {
                         cashAmount: balance.cashToken,
                         tokenAmount: balance.securityToken
                 )
+            }
+            if (featureFlag) {
+                smPort.makeSMRequest(new SMRequest(
+                    balances: balances.collect { clientId, balance ->
+                        new SMBalance(client: clientId, cashAmount: balance.cashAmount, tokenAmount: balance.tokenAmount)
+                    },
+                    settlements: settlements.collect { settlement ->
+                        new SMSettlement(
+                            tokenAmount: settlement.securityAmount,
+                            cashAmount: settlement.cashAmount,
+                            buyer: settlement.buyer.id,
+                            seller: settlement.seller.id,
+                            id: settlement.id
+                        )
+                    }
+                ))
+            }
+            else {
+                GetAiCombinationQueryModel selectedSettlements = queryBus.executeAndWait(new GetLsmNetResultQuery(
+                settlements: settlements.collect { settlement ->
+                    new IASettlement(
+                        tokenAmount: settlement.securityAmount,
+                        cashAmount: settlement.cashAmount,
+                        buyer: settlement.buyer.id,
+                        seller: settlement.seller.id,
+                        id: settlement.id
+                    )
+                },
+                balances: balances
+            ))
+            if (!selectedSettlements.settlements.empty) {
+                commandBus.executeAndWait(
+                    new PersistLsmNetCommand(
+                        settlementIds: selectedSettlements.settlements*.id,
+                        batchId: model.batchId,
+                        aiOutput: selectedSettlements.aiResult
+                    )
+                )
+            }
             }
             //TODO: Add FT for async AI call
 //            GetAiCombinationQueryModel selectedSettlements = queryBus.executeAndWait(new GetLsmNetResultQuery(
