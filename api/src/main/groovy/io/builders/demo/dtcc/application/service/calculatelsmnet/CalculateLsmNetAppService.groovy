@@ -58,7 +58,7 @@ class CalculateLsmNetAppService {
                         tokenAmount: balance.securityToken
                 )
             }
-            if (featureFlag) {
+            if (true) {
                 smPort.makeSMRequest(new SMRequest(
                     balances: balances.collect { clientId, balance ->
                         new SMBalance(client: clientId, cashAmount: balance.cashAmount, tokenAmount: balance.tokenAmount)
