@@ -1,6 +1,5 @@
 package io.builders.demo.dtcc.application.service.calculatelsmnet
 
-import groovy.util.logging.Slf4j
 import io.builders.demo.core.command.CommandBus
 import io.builders.demo.core.query.QueryBus
 import io.builders.demo.dtcc.application.command.persistlsm.PersistLsmNetCommand
@@ -16,6 +15,8 @@ import io.builders.demo.integration.model.IASettlement
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+
+import groovy.util.logging.Slf4j
 
 @Service
 @Slf4j

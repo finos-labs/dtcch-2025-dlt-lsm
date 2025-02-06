@@ -1,6 +1,7 @@
 package io.builders.demo.core.query
 
-import groovy.util.logging.Slf4j
+import static io.builders.demo.core.serialize.Serializer.serializeQuery
+
 import io.builders.demo.core.exception.QueryHandlerNotFoundException
 import io.builders.demo.core.exception.QueryTimeoutException
 import io.builders.demo.core.reflections.ReflectionsUtils
@@ -19,11 +20,12 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
-import static io.builders.demo.core.serialize.Serializer.serializeQuery
+import groovy.util.logging.Slf4j
 
 @Component
 @Primary
 @Slf4j
+@SuppressWarnings(['MisorderedStaticImports'])
 class MemoryQueryBus implements QueryBus {
 
     @Value('${queryBus.prefix:query}')
