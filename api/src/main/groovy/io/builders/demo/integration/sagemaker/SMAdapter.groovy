@@ -32,16 +32,18 @@ class SMAdapter implements SMPort {
         String inputKey = "async-inference-inputs/${UUID.randomUUID()}.json"
         String payload = toJson(smRequest, callbackUrl)
 
+        log.info('✅ S3 Client created')
         s3Client.putObject(s3Bucket, inputKey, payload)
         String s3InputUri = "s3://${s3Bucket}/${inputKey}"
-        println("✅ JSON uploaded to S3 in: ${s3InputUri}")
+        log.info("✅ JSON uploaded to S3 in: ${s3InputUri}")
 
         InvokeEndpointAsyncRequest request = new InvokeEndpointAsyncRequest()
             .withEndpointName(endpointName)
             .withInputLocation(s3InputUri)
 
+        log.info("✅ InvokeEndpointAsyncRequest created ${request}")
         sagemakerRuntime.invokeEndpointAsync(request)
-
+        log.info('✅ Sagemaker invoked')
     }
 
     private String toJson(SMRequest request, String callbackUrl) {

@@ -23,6 +23,11 @@ export const getSettlementDetails = async (id: string) => {
   return (await axios.get(getUrl("/settlements/" + id).toString())).data;
 };
 
+export const resetBalances = async (amount: number) => {
+  return (await axios.post(getUrl("/reset-balance/").toString(), { amount }))
+    .data;
+};
+
 export const createRandomSettlements = async (amount: number) => {
   const elements: { settlements: SettlementRequest[] } = { settlements: [] };
   for (let i = 0; i < amount; i++) {
